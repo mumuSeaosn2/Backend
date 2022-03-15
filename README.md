@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 3.run command for clone
 ```bash
-git clone --depth 1 https://github.com/mumuSeaosn2/Backend.git
+git clone https://github.com/mumuSeaosn2/Backend.git
 cd Backend
 ```
 
