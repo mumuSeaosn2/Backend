@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  mumuseason2-api:
+    container_name: mumuseason2-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    volumes:
+      - ./:/app/
+    networks:
+      - mumuseason2-api
+    depends_on:
+      - mumuseason2-database
+    #entrypoint: ./wait-for-it.sh mumuseason2-database:5432 
+
+  mumuseason2-database:
+    container_name: mumuseason2-database
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=mumu2db
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_TCP_PORT= 5432
+    ports:
+      - "5432:5432"
+    volumes:
+      #- mumuseason2-msdata:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+      - mumuseason2-msdata:/var/lib/mysql
+    networks:
+      - mumuseason2-api
+
+networks:
+  mumuseason2-api:
+    driver: bridge
+
+volumes:
+  mumuseason2-msdata:

@@ -3,38 +3,22 @@
 
 ## Manual Installation
 
-1.install mySQL  
-2. run command for db setting
-```bash
-CREATE DATABASE dbname;
-CREATE TABLE IF NOT EXISTS `user` (
-  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name varchar(255) NOT NULL,
-  email varchar(255),
-  published BOOLEAN DEFAULT false
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-```
+1.install docker desktop  
 
-3.run command for clone
+2.run command for clone
 ```bash
 git clone https://github.com/mumuSeaosn2/Backend.git
 cd Backend
 ```
 
-4.Install the dependencies:
+3.chanege the db.config and delete the word .example in name
+
+4.run command for docker
 ```bash
-yarn install
+docker-compose up -d --build
 ```
 
-5.chanege the db.config and delete the word .example in name
-
-
-6.run the express server
-```bash
-node server.js
-```
-
-7.chekdout http://localhost:3000/api/docs/
+5.chekdout http://localhost:3000/api/docs/
 
 ## License
 

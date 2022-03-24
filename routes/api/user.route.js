@@ -42,11 +42,11 @@
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - user_name
  *               - email
  *               - password
  *             properties:
- *               name:
+ *               user_name:
  *                 type: string
  *               email:
  *                 type: string
@@ -58,7 +58,7 @@
  *                 minLength: 8
  *                 description: At least one number and one letter
  *             example:
- *               name: fake name
+ *               user_name: fake name
  *               email: fake@example.com
  *               password: password1
  *     responses:
@@ -83,7 +83,7 @@
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: name
+ *         user_name: user_name
  *         schema:
  *           type: string
  *         description: User name
@@ -188,14 +188,14 @@
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               user_name:
  *                 type: string
  *               email:
  *                 type: string
  *                 format: email
  *                 description: must be unique
  *             example:
- *               name: fake name
+ *               user_name: fake name
  *               email: fake@example.com
  *     responses:
  *       "200":

@@ -1,9 +1,12 @@
 const sql = require("./db.js");
 // constructor
 const User = function(user) {
-  this.name = user.name;
+  this.user_name = user.user_name;
   this.email = user.email;
-  this.published = user.published;
+  this.password = user.password;
+  this.provider = user.provider;
+  this.sns_id = user.sns_id;
+  this.profile = user.profile;
 };
 User.create = (newUser, result) => {
   sql.query("INSERT INTO user SET ?", newUser, (err, res) => {
@@ -17,7 +20,7 @@ User.create = (newUser, result) => {
   });
 };
 User.findById = (id, result) => {
-  sql.query(`SELECT * FROM user WHERE id = ${id}`, (err, res) => {
+  sql.query(`SELECT * FROM user WHERE user_id = ${id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -32,10 +35,10 @@ User.findById = (id, result) => {
     result({ kind: "not_found" }, null);
   });
 };
-User.getAll = (name, result) => {
+User.getAll = (user_name, result) => {
   let query = "SELECT * FROM user";
-  if (name) {
-    query += ` WHERE name LIKE '%${name}%'`;
+  if (user_name) {
+    query += ` WHERE user_name LIKE '%${user_name}%'`;
   }
   sql.query(query, (err, res) => {
     if (err) {
@@ -48,7 +51,7 @@ User.getAll = (name, result) => {
   });
 };
 User.getAllPublished = result => {
-  sql.query("SELECT * FROM user WHERE published=true", (err, res) => {
+  sql.query("SELECT * FROM user WHERE =true", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -60,8 +63,8 @@ User.getAllPublished = result => {
 };
 User.updateById = (id, user, result) => {
   sql.query(
-    "UPDATE user SET name = ?, email = ?, published = ? WHERE id = ?",
-    [user.name, user.email, user.published, id],
+    "UPDATE user SET user_name = ?, email = ?  WHERE user_id = ?",
+    [user.user_name, user.email, id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -79,7 +82,7 @@ User.updateById = (id, user, result) => {
   );
 };
 User.remove = (id, result) => {
-  sql.query("DELETE FROM user WHERE id = ?", id, (err, res) => {
+  sql.query("DELETE FROM user WHERE user_id = ?", id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
