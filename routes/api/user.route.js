@@ -83,7 +83,7 @@
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         user_name: user_name
+ *         user_name: user_id
  *         schema:
  *           type: string
  *         description: User name
