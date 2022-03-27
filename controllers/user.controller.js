@@ -1,4 +1,6 @@
-const User = require("../models/user.model.js");
+const User = require("../service/user.service.js");
+//const User = require("../models/user");
+
 // Create and Save a new User
 
 exports.create = (req, res) => {
@@ -9,20 +11,23 @@ exports.create = (req, res) => {
     });
   }
   // Create a User
+  //const body = req.body;
   const user = new User({
     user_name: req.body.user_name,
     email: req.body.email,
     password: req.body.password
   });
   // Save User in the database
-  User.create(user, (err, data) => {
+  User.create(user,(err, data) => {
     if (err)
       res.status(500).send({
         message:
           err.message || "Some error occurred while creating the User."
       });
     else res.send(data);
+
   });
+
 };
 
 

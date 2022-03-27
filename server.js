@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const routes = require("./routes/api/");
 
+const { sequelize } = require("./models");
+
 const app = express();
 
 //enable cors
@@ -13,6 +15,14 @@ app.use(express.json())
 
 //parse unrlencoded json request body
 app.use(express.urlencoded({extended:true}));
+
+sequelize.sync({ force: false })
+  .then(() => {
+    console.log('Successfully connected');
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 app.get("/",(req,res) => {
     res.json({message:"hello"});
