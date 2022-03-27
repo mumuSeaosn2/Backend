@@ -28,7 +28,7 @@ services:
       - "5432:5432"
     volumes:
       #- mumuseason2-msdata:/var/lib/mysql
-      - ./init:/docker-entrypoint-initdb.d
+      #- ./init:/docker-entrypoint-initdb.d
       - mumuseason2-msdata:/var/lib/mysql
     networks:
       - mumuseason2-api
