@@ -54,7 +54,7 @@ app.get("/",(req,res) => {
 });
 
 
-app.use('/api',routes);
+app.use('/',routes);
 const PORT = process.env.PORT || 3000;
 //app.use('/docs',swaggerUi.serve,swaggerUi.setup(swaggerDefinition));
 

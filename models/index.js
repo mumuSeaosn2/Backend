@@ -35,8 +35,10 @@ db.Chat=require('./chat')(sequelize,Sequelize);
 
 db.User.hasMany(db.Chat);
 db.Chat.belongsTo(db.User);
+
 db.RoomList.hasMany(db.Chat);
 db.Chat.belongsTo(db.RoomList);
+
 db.User.hasMany(db.RoomList);
 db.RoomList.belongsToMany(db.User,{through:'ChatAndUser'})
 
