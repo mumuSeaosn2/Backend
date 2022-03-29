@@ -1,4 +1,6 @@
 const User = require("../service/user.service.js");
+const bcrypt = require('bcrypt');
+const passport = require('passport');
 //const User = require("../models/user");
 
 // Create and Save a new User
@@ -9,7 +11,7 @@ exports.create = (req, res) => {
     res.status(400).send({
       message: "Content can not be empty!"
     });
-  }
+  };
   // Create a User
   //const body = req.body;
   const user = new User({
@@ -17,6 +19,7 @@ exports.create = (req, res) => {
     email: req.body.email,
     password: req.body.password
   });
+
   // Save User in the database
   User.create(user,(err, data) => {
     if (err)

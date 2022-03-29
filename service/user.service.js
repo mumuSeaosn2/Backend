@@ -46,6 +46,24 @@ User.findById = (id, results) => {
     });
 };
 
+// User.findByEmail = (email, results) => {
+//   model.User.findOne({
+//     raw: true,
+//     where: {email:email},
+//     attributes:['id','email','user_name']
+//   })
+//   .then(result => 
+//       {console.log("find user: ",result);
+//       results(null,result)
+//       return;
+//     })
+//     .catch(err => 
+//       {results(err,null);
+//       console.log(err);
+//       return;
+//     });
+// };
+
 
 User.getAll = (user_name, results) => {
   if (user_name){
@@ -98,8 +116,6 @@ User.updateById = (id, user, results) => {
     return;
   });
 };
-
-
 
 User.remove = (id, results) => {
   model.User.destroy({

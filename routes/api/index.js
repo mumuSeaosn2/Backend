@@ -13,21 +13,21 @@ const defaultRoutes = [
     },
   ];
  
-  const devRoutes = [
-    // routes available only in development mode
-    {
-      path: '/docs',
-      route: docsRoute,
-    },
-  ];
+const devRoutes = [
+  // routes available only in development mode
+  {
+    path: '/docs',
+    route: docsRoute,
+  },
+];
 
-  
-  devRoutes.forEach((route) => {
-    router.use(route.path, route.route);
-  });
 
-  defaultRoutes.forEach((route) => {
-    router.use(route.path, route.route);
-  });
+devRoutes.forEach((route) => {
+  router.use(route.path, route.route);
+});
 
-  module.exports = router;
+defaultRoutes.forEach((route) => {
+  router.use(route.path, route.route);
+});
+
+module.exports = router;
