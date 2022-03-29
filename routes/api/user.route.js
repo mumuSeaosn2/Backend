@@ -146,11 +146,11 @@
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: email
  *         required: true
  *         schema:
  *           type: string
- *         description: User id
+ *         description: User email
  *     responses:
  *       "200":
  *         description: OK

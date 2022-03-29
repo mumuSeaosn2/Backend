@@ -2,7 +2,7 @@ const model = require("../models");
 // constructor
 
 const User = function(user) {
-  this.user_email = user.user_email;
+  this.user_name = user.user_name;
   this.email = user.email;
   this.password = user.password;
   this.provider = user.provider;
@@ -12,7 +12,7 @@ const User = function(user) {
 
 User.create = (newUser, results) => {
   model.User.create({
-    user_email: newUser.user_email,
+    user_name: newUser.user_name,
     email: newUser.email,
     password:newUser.password
     })
