@@ -2,7 +2,7 @@
     const user = require("../../controllers/user.controller.js");
     const router = express.Router();
     
-
+    console.log(router);
     // Create a new Tutorial
     router.post("/", user.create);
 
@@ -62,7 +62,7 @@
  *               email: fake@example.com
  *               password: password1
  *     responses:
- *       "201":
+ *       "200":
  *         description: Created
  *         content:
  *           application/json:
