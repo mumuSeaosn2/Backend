@@ -3,7 +3,7 @@ const User = require("../service/user.service.js");
 
 // Create and Save a new User
 
-exports.create = (req, res) => {
+exports.userCreate = (req, res) => {
    // Validate request
    if (!req.body) {
     res.status(400).send({
@@ -32,8 +32,8 @@ exports.create = (req, res) => {
 
 
 // Retrieve all Tutorials from the database (with condition).
-exports.findAll = (req, res) => {
-    const name = req.query.name;
+exports.userFindAll = (req, res) => {
+    const name = req.query.email;
     User.getAll(name, (err, data) => {
       if (err)
         res.status(500).send({
@@ -46,8 +46,9 @@ exports.findAll = (req, res) => {
 
 
 // Find a single User with a id
-exports.findOne = (req, res) => {
-    User.findById(req.params.id, (err, data) => {
+exports.userFindOne = (req, res) => {
+  console.log(req.params.email)
+    User.findById(req.params.email, (err, data) => {
         if (err) {
           if (err.kind === "not_found") {
             res.status(404).send({
@@ -63,21 +64,8 @@ exports.findOne = (req, res) => {
 };
 
 
-// find all published Tutorials
-exports.findAllPublished = (req, res) => {
-    User.getAllPublished((err, data) => {
-        if (err)
-          res.status(500).send({
-            message:
-              err.message || "Some error occurred while retrieving tutorials."
-          });
-        else res.send(data);
-      });
-};
-
-
 // Update a User identified by the id in the request
-exports.update = (req, res) => {
+exports.userUpdate = (req, res) => {
   // Validate Request
   if (!req.body) {
     res.status(400).send({
@@ -106,7 +94,7 @@ exports.update = (req, res) => {
 
 
 // Delete a User with the specified id in the request
-exports.delete = (req, res) => {
+exports.userDelete = (req, res) => {
     User.remove(req.params.id, (err, data) => {
         if (err) {
           if (err.kind === "not_found") {
@@ -124,6 +112,7 @@ exports.delete = (req, res) => {
 
 
 // Delete all Tutorials from the database.
+/*
 exports.deleteAll = (req, res) => {
     User.removeAll((err, data) => {
         if (err)
@@ -133,4 +122,4 @@ exports.deleteAll = (req, res) => {
           });
         else res.send({ message: `All Tutorials were deleted successfully!` });
       });
-};
+};*/

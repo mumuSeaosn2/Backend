@@ -4,25 +4,22 @@
     
     console.log(router);
     // Create a new Tutorial
-    router.post("/", user.create);
+    router.post("/", user.userCreate);
 
     // Retrieve all Tutorials
-    router.get("/", user.findAll);
-
-    // Retrieve all published Tutorials
-    router.get("/published", user.findAllPublished);
+    router.get("/", user.userFindAll);
 
     // Retrieve a single Tutorial with id
-    router.get("/:id", user.findOne);
+    router.get("/:email", user.userFindOne);
 
     // Update a Tutorial with id
-    router.patch("/:id", user.update);
+    router.patch("/:id", user.userUpdate);
 
     // Delete a Tutorial with id
-    router.delete("/:id", user.delete);
+    router.delete("/:id", user.userDelete);
 
     // Delete all Tutorials
-    router.delete("/", user.deleteAll);
+    //router.delete("/", user.userDeleteAll);
 
     module.exports = router;
 
@@ -137,10 +134,10 @@
  */
 
 
-   
+  
 /**
  * @swagger
- * /user/{id}:
+ * /user/{email}:
  *   get:
  *     summary: Get a user
  *     description: Logged in users can fetch only their own user information. Only admins can fetch other users.
@@ -168,6 +165,12 @@
  *       "404":
  *         $ref: '#/components/responses/NotFound'
  *
+*/
+
+/**
+ * @swagger
+ * /user/{id}:
+
  *   patch:
  *     summary: Update a user
  *     description: Logged in users can only update their own information. Only admins can update other users.

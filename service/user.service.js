@@ -2,7 +2,7 @@ const model = require("../models");
 // constructor
 
 const User = function(user) {
-  this.user_name = user.user_name;
+  this.user_email = user.user_email;
   this.email = user.email;
   this.password = user.password;
   this.provider = user.provider;
@@ -12,7 +12,7 @@ const User = function(user) {
 
 User.create = (newUser, results) => {
   model.User.create({
-    user_name: newUser.user_name,
+    user_email: newUser.user_email,
     email: newUser.email,
     password:newUser.password
     })
@@ -28,10 +28,10 @@ User.create = (newUser, results) => {
     });
 };
 
-User.findById = (id, results) => {
+User.findById = (email, results) => {
   model.User.findOne({
     raw: true,
-    where: {id:id},
+    where: {email:email},
     attributes:['id','email','user_name']
   })
   .then(result => 
@@ -47,11 +47,11 @@ User.findById = (id, results) => {
 };
 
 
-User.getAll = (user_name, results) => {
-  if (user_name){
+User.getAll = (user_email, results) => {
+  if (user_email){
     model.User.findAll({
       raw: true,
-      where: {user_name:user_name},
+      where: {user_email:user_email},
       attributes:['id','email','user_name']
     })
     .then(result => 
@@ -83,13 +83,13 @@ User.getAll = (user_name, results) => {
 
 User.updateById = (id, user, results) => {
   model.User.update({
-    user_name:user.user_name,
+    user_email:user.user_email,
     email:user.email},
     {where:{id:id}},
     
   ).then(result => 
-    {console.log("update user: ",{id:id,user_name:user.user_name,email:user.email});
-    results(null,{id:id,user_name:user.user_name,email:user.email})
+    {console.log("update user: ",{id:id,user_email:user.user_email,email:user.email});
+    results(null,{id:id,user_email:user.user_email,email:user.email})
     return;
   })
   .catch(err => 
