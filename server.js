@@ -6,7 +6,7 @@ const session = require('express-session');
 const cookieparser = require('cookie-parser');
 const routes = require("./routes/api/");
 const { sequelize } = require("./models");
-const passportConfig = require('./passport');
+const passportConfig = require('./passport/localStrategy');
 const cookieParser = require('cookie-parser');
 
 const app = express();

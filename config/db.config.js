@@ -1,10 +1,10 @@
-const credentials = require('../.credential.development');
+require('dotenv').config()
 
 module.exports = {
-    host: credentials.DB.host,
-    username: credentials.DB.username,
-    password: credentials.DB.password,
-    database: credentials.DB.database,
-    port: credentials.DB.port,
+    host: process.env.DB_HOST,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database:process.env.DB_DATABASE,
+    port: process.env.DB_PORT,
     dialect:"mysql"
 };

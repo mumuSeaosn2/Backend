@@ -1,5 +1,5 @@
 const User = require("../service/user.service.js");
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const passport = require('passport');
 //const User = require("../models/user");
 
@@ -21,14 +21,30 @@ exports.userCreate = (req, res) => {
   });
 
   try{
-    await User.findById(user.email, (err, data) => {
-      if (err) res.status(500).send({
-        message : err.message || "Some error occurred while creating the User."
-      });
-      else if(data === null) {
-        
+    User.findById(user.email, async (err, data) => {
+      if (err === null) {
+        if(data === null) {
+          const hash = await bcrypt.hash(user.password, 12);
+          user.password = hash;
+
+          await User.create(user, (err, data) => {
+            if (err) res.status(500).send({message : err.message 
+              || "Some error occurred while creating the User."
+              })
+            else res.send(data);
+          })
+        } else {
+          res.status(400).send({message : "Already exist"});
+        }
+      } else {
+        res.status(500).send({
+          message: "Error retrieving User with id " + req.params.email
+        })
       }
     })
+  }catch(err) {
+    console.error(err);
+    next(err);
   }
 
   // Save User in the database
