@@ -15,13 +15,24 @@ exports.userCreate = (req, res) => {
   // Create a User
   //const body = req.body;
   const user = new User({
-    user_name: req.body.user_name,
-    email: req.body.email,
-    password: req.body.password
+    user_name : req.body.user_name,
+    email : req.body.email,
+    password : req.body.password
   });
 
+  try{
+    await User.findById(user.email, (err, data) => {
+      if (err) res.status(500).send({
+        message : err.message || "Some error occurred while creating the User."
+      });
+      else if(data === null) {
+        
+      }
+    })
+  }
+
   // Save User in the database
-  User.create(user,(err, data) => {
+  /* User.create(user,(err, data) => {
     if (err)
       res.status(500).send({
         message:
@@ -29,9 +40,9 @@ exports.userCreate = (req, res) => {
       });
     else res.send(data);
 
-  });
+  }); */
 
-};
+}
 
 
 // Retrieve all Tutorials from the database (with condition).
