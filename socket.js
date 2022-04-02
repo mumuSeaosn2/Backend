@@ -22,20 +22,10 @@ module.exports = (server, app) => {
       .split('/')[referer.split('/').length - 1]
       .replace(/\?.+/, '');
     socket.join(roomId);
-    socket.to(roomId).emit('join', {
-     // user: 'system',
-      // chat: `${req.session.nick}님이 입장하셨습니다.`,
-    });
 
     socket.on('disconnect', () => {
       console.log('chat 네임스페이스 접속 해제');
-      socket.leave(roomId);
-
-      socket.to(roomId).emit('exit', {
-       // user: 'system',
-        // chat: `${req.session.id}님이 퇴장하셨습니다.`,
-      });
-      
+      socket.leave(roomId);     
     });
 
     socket.on('chat', (data) => {
