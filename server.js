@@ -53,8 +53,13 @@ app.get("/",(req,res) => {
     res.json({message:"hello"});
 });
 
+const chatRouter = require('./routes/chat');
+
 
 app.use('/',routes);
+app.use('chat',chatRouter);
+
+
 const PORT = process.env.PORT || 3000;
 //app.use('/docs',swaggerUi.serve,swaggerUi.setup(swaggerDefinition));
 

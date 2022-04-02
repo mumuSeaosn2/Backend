@@ -16,7 +16,7 @@ module.exports = (passport) => {
                 if(!user) {
                     done(null, false, {message:'미가입 회원'});
                 } else {
-                    const result = await bcrypt.compare(password, user.password);
+                    const result = bcrypt.compare(password, user.password);
                     if(result) {
                         done(null, user);
                     } else {
