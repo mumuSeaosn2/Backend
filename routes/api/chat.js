@@ -34,7 +34,7 @@ router.post('/room/:id/chat', async (req, res, next) => {
     });
 
 
-    req.app.get('io').of('/chat').to(req.params.id).emit('chat', chat);
+    req.app.get('io').of('/chat').to(req.params.id).emit('chat', {chat,userinfo:req.user});
     res.send('채팅 전송');
   } catch (error) {
     console.error(error);
