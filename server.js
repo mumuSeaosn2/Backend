@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -8,6 +9,7 @@ const routes = require("./routes/api/");
 const { sequelize } = require("./models");
 const passportConfig = require('./passport/localStrategy');
 const cookieParser = require('cookie-parser');
+const mySqlStore = require('express-mysql-session')(session);
 
 const app = express();
 
@@ -24,7 +26,16 @@ app.use(express.urlencoded({extended:true}));
 //cookie activate
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-//memory session activate
+//mysql session activate
+const mySqlOption = {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
+};
+
+const sessionStore = new mySqlStore(mySqlOption);
 app.use(session({
   resave:false,
   saveUninitialized:false,
@@ -32,7 +43,8 @@ app.use(session({
   cookie:{
     httpOnly:true,
     secure:false,
-  }
+  },
+  store: sessionStore
 }));
 
 //DB sync
@@ -45,9 +57,9 @@ sequelize.sync({ force: false })
 });
 
 //passport init
-passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.session());
+passportConfig();
 
 app.get("/",(req,res) => {
     res.json({message:"hello"});
