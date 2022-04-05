@@ -9,7 +9,7 @@ module.exports = () => {
     });
     
     passport.deserializeUser((user, done) => {
-    done(null, user);
+        done(null, user);
     });
 
     passport.use(new LocalStrategy({
