@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `user` (
     user_id INT AUTO_INCREMENT,
     email VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    password CHAR(60) NOT NULL,
     profile LONGBLOB,
     provider VARCHAR(255) DEFAULT 'Local',
     sns_id VARCHAR(255),

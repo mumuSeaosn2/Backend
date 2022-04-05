@@ -1,3 +1,5 @@
-db.config.js
 node_modules/
+view/
+yarn.lock
 package-lock.json
+.env

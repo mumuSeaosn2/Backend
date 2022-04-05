@@ -19,7 +19,7 @@ module.exports = ((sequelize,DataTypes)=>{
             primaryKey: true,
         },
         password:{
-            type: Sequelize.STRING(50),
+            type: Sequelize.STRING(60),
             allowNull: false, 
         },
         prvider :{ // 뭐로 로그인 했는지 : 카카오, 로컬,,
