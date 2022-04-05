@@ -12,9 +12,9 @@ const User = function(user) {
 
 User.create = (newUser, results) => {
   model.User.create({
-    user_name: newUser.user_name,
-    email: newUser.email,
-    password:newUser.password
+    user_name : newUser.user_name,
+    email : newUser.email,
+    password : newUser.password
     })
     .then(result => 
       {console.log("created user: ",{ ...newUser });
@@ -30,9 +30,9 @@ User.create = (newUser, results) => {
 
 User.findById = (email, results) => {
   model.User.findOne({
-    raw: true,
-    where: {email:email},
-    attributes:['id','email','user_name']
+    raw : true,
+    where : { email : email },
+    attributes : ['id','email','user_name']
   })
   .then(result => 
       {console.log("find user: ",result);
@@ -45,6 +45,24 @@ User.findById = (email, results) => {
       return;
     });
 };
+
+// User.findByEmail = (email, results) => {
+//   model.User.findOne({
+//     raw: true,
+//     where: {email:email},
+//     attributes:['id','email','user_name']
+//   })
+//   .then(result => 
+//       {console.log("find user: ",result);
+//       results(null,result)
+//       return;
+//     })
+//     .catch(err => 
+//       {results(err,null);
+//       console.log(err);
+//       return;
+//     });
+// };
 
 
 User.getAll = (user_email, results) => {
@@ -98,8 +116,6 @@ User.updateById = (id, user, results) => {
     return;
   });
 };
-
-
 
 User.remove = (id, results) => {
   model.User.destroy({

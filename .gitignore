@@ -1,3 +1,4 @@
-db.config.js
 node_modules/
+view/
 package-lock.json
+.env
