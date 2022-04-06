@@ -1,7 +1,7 @@
 const Room = require("../service/room.service.js");
 
 exports.roomCreate = (req, res) => {
-    Room.create((err,data) => {
+    Room.create(req.params.id,(err,data) => {
         if (err)
             res.status(500).send({
                 message:
@@ -39,22 +39,13 @@ exports.roomDelete = (req,res) => {
         });
 };
 
-exports.roomFindById = (req, res,next) => {
-  const chat = new Chat({
-    email : req.query.email,
-  });
-
-  try{
-      Chat.JoinById(Chat.email, async(err,data)=>{
-          if(err == null){
-               res.send(data)
-          }
-          else{
-              res.status(500).send({message:"Error in server"})
-          }
-      })
-  }catch(err){
-      console.error(err);
-      next(err);
-  }
+exports.roomFindById = (req, res) => {
+    Room.JoinById(req.params.id, async(err,data)=>{
+        if(err){
+          res.status(500).send({message:"Error in server"})
+        }
+        else{
+          res.send(data)
+        }
+    })
 };

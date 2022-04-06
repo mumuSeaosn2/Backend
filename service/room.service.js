@@ -5,10 +5,11 @@ const Room = function(room) {
     this.email = room.email;
 };
 
-Room.create = (results) => {
+Room.create = (id,results) => {
     model.RoomList.create({
+        userId:id,
         raw:true,
-        attribures:["id"]
+        attribures:["id","userId"]
     }).then(result =>
         {console.log("create new room: ",result)
         results(null,result);
@@ -76,15 +77,10 @@ Room.delete = (id,results) => {
 };
 
 
-Room.JoinById = (email, results) => {
+Room.JoinById = (id, results) => {
     model.RoomList.findAll({
-      include:[{
-          model:model.User,
-          where : { email : email },
-          attributes : ['id'],
-      }
-      ],
-      attributes:['room_id'],
+      where: {userId:id},
+      attributes:['id'],
     })
     .then(result => 
         {console.log("find rooms: ",result);

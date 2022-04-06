@@ -3,14 +3,14 @@ const room = require("../../controllers/room.controller.js");
 const router = express.Router();
 
 //Create a new room
-router.post("/create",room.roomCreate);
+router.post("/create/:id",room.roomCreate);
 
 //Retrive all roomList
 router.get("/list",room.roomFindAll);
 
 
 //Retrive roomList by user email
-router.get("/list:email",room.roomFindById);
+router.get("/list/:id",room.roomFindById);
 
 /*
 //Retrive a room with id
@@ -26,13 +26,20 @@ module.exports = router;
 
 /**
  * @swagger
- * /room/create:
+ * /room/create/{id}:
  *   post:
  *     summary: Create a room
  *     description: Only admins can create other users.
  *     tags: [room]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User id
  *     responses:
  *       "200":
  *         description: Created
@@ -115,7 +122,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /room/list/{email}:
+ * /room/list/{id}:
  *   get:
  *     summary : Find room which user get in there
  *     description: Only admins cam create other users.
@@ -124,14 +131,18 @@ module.exports = router;
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: email
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: user id
+ *         description: User id
  *     responses:
  *       "200":
- *         description: No content
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Room'
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
