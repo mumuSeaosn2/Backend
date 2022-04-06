@@ -15,6 +15,14 @@ components:
         email: fake@example.com
         user_name: fake name
 
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+      example:
+        id: 5ebac534954b54139806c112
+    
     Error:
       type: object
       properties:

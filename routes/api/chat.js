@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
 
-const { User,RoomList,Chat } = require('../models');
-const { isLoggedIn } = require('./middlewares');
+const { User,RoomList,Chat } = require('../../models');
+const { isLoggedIn } = require('../middlewares');
 
 const router = express.Router();
 

@@ -1,8 +1,7 @@
     const express = require('express');
     const user = require("../../controllers/user.controller.js");
     const router = express.Router();
-    
-    console.log(router);
+  
     // Create a new Tutorial
     router.post("/", user.userCreate);
 

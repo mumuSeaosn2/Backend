@@ -3,8 +3,6 @@ const auth = require("../../controllers/auth.controller.js");
 const passport = require('passport');
 const router = express.Router();
 
-console.log(router);
-
 //login
 router.post('/login', passport.authenticate('local', {
     failureRedirect: '/',
