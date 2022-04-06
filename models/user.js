@@ -22,7 +22,7 @@ module.exports = ((sequelize,DataTypes)=>{
             type: Sequelize.STRING(60),
             allowNull: false, 
         },
-        prvider :{ // 뭐로 로그인 했는지 : 카카오, 로컬,,
+        provider :{ // 뭐로 로그인 했는지 : 카카오, 로컬,,
             type: Sequelize.STRING(10),
             allowNull: false,
             defaultValue: 'local',
