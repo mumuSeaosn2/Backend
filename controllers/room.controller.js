@@ -7,7 +7,10 @@ exports.roomCreate = (req, res) => {
                 message:
                     err.message || "Some error occurred while creating rommList."
             });
-            else res.send(data);
+            else {
+              req.app.get('io').of('/room').emit('newRoom', data);
+              res.send(data);
+            }
     });
 };
 
