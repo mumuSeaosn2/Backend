@@ -20,6 +20,20 @@ docker-compose up -d --build
 
 5.chekdout http://localhost:3000/api/docs/
 
+## how to check db status
+
+
+1.run this command
+```
+docker exec -it <container-name> bash
+mysql -u <user> -p
+<user password>
+use <database name>
+
+desc <table name>;
+or
+show tables;
+```
 ## License
 
 [MIT](LICENSE)
