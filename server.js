@@ -65,11 +65,11 @@ app.get("/",(req,res) => {
     res.json({message:"hello"});
 });
 
-const chatRouter = require('./routes/chat');
+//const chatRouter = require('./routes/api/chat');
 
 
 app.use('/',routes);
-app.use('chat',chatRouter);
+//app.use('chat',chatRouter);
 
 
 const PORT = process.env.PORT || 3000;
