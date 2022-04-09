@@ -4,16 +4,14 @@ const passport = require('passport');
 const router = express.Router();
 
 //login
-router.post('/login', passport.authenticate('local', {
-    failureRedirect: '/',
-    successRedirect: '/',
-    })
-);
+router.post('/login', passport.authenticate('local'), (req, res) => {
+    res.send(req.user.user_name);
+});
+
 
 //logout
 router.post('/logout', (req, res) => {
     req.logout();
-    res.redirect('/');
 });
 
 router.post('/register', auth.register );
