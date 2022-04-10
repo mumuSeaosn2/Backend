@@ -4,16 +4,19 @@ const passport = require('passport');
 const router = express.Router();
 
 //login
-router.post('/login', passport.authenticate('local', {
-    failureRedirect: '/',
-    successRedirect: '/',
-    })
-);
+router.post('/login', passport.authenticate('local'),(req, res) => {
+    if(!req.body){
+        res.status(400).send({
+            message:"request could not be empty",
+        })
+    }
+    res.send(req.body.user_name);
+});
+
 
 //logout
 router.post('/logout', (req, res) => {
     req.logout();
-    res.redirect('/');
 });
 
 router.post('/register', auth.register );
