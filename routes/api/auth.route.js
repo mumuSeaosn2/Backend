@@ -4,8 +4,13 @@ const passport = require('passport');
 const router = express.Router();
 
 //login
-router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.send(req.user.user_name);
+router.post('/login', passport.authenticate('local'),(req, res) => {
+    if(!req.body){
+        res.status(400).send({
+            message:"request could not be empty",
+        })
+    }
+    res.send(req.body.user_name);
 });
 
 

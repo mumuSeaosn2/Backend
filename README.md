@@ -11,14 +11,14 @@ git clone https://github.com/mumuSeaosn2/Backend.git
 cd Backend
 ```
 
-3.chanege the db.config and delete the word .example in name
+3.change the db.config and delete the word .example in name
 
 4.run command for docker
 ```bash
 docker-compose up -d --build
 ```
 
-5.chekdout http://localhost:3000/api/docs/
+5.check out http://localhost:3000/api/docs/
 
 ## how to check db status
 
