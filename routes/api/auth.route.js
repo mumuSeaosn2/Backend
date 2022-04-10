@@ -10,7 +10,7 @@ router.post('/login', passport.authenticate('local'),(req, res) => {
             message:"request could not be empty",
         })
     }
-    res.send(req.body.user_name);
+    res.send(req.session.passport.user.user_name);
 });
 
 
