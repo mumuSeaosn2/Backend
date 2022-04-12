@@ -3,6 +3,7 @@ const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const authRoute = require('./auth.route');
 const roomRoute = require('./room.route');
+const friendRoute = require('./friend.route');
 const chatRoute = require('./chat')
 
 const router = express.Router();
@@ -25,6 +26,10 @@ const defaultRoutes = [
     {
       path: '/chat',
       route: chatRoute,
+    },
+    {
+      path: '/friend',
+      route: friendRoute,
     },
   ];
  
