@@ -7,7 +7,8 @@ const session = require('express-session');
 const cookieparser = require('cookie-parser');
 const routes = require("./routes/api/");
 const { sequelize } = require("./models");
-const passportConfig = require('./passport/localStrategy');
+const passportLocalConfig = require('./passport/localStrategy');
+const passportGoogleConfig = require('./passport/googleStrategy');
 const cookieParser = require('cookie-parser');
 const mySqlStore = require('express-mysql-session')(session);
 
@@ -59,10 +60,12 @@ sequelize.sync({ force: false })
 //passport init
 app.use(passport.initialize());
 app.use(passport.session());
-passportConfig();
+passportLocalConfig();
+passportGoogleConfig();
 
 app.get("/",(req,res) => {
-    res.json({message:"hello"});
+    //res.json({message:"hello"});
+    res.sendFile(__dirname + '/view/login_test.html');
 });
 
 //const chatRouter = require('./routes/api/chat');

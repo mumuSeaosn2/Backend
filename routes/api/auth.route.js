@@ -5,9 +5,18 @@ const router = express.Router();
 
 console.log(router);
 
-//login
+//login-local
 router.post('/login', passport.authenticate('local'), (req, res) => {
     res.send(req.user.user_name);
+});
+
+//login-google
+router.get('/login/google', passport.authenticate('google',{ scope: ["email", "profile"] }));
+
+router.get("/login/google/callback", passport.authenticate("google"), (req, res) => {
+    console.log(req.user);
+    res.send(req.user);
+    //console.log(res);
 });
 
 

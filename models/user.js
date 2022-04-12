@@ -20,15 +20,15 @@ module.exports = ((sequelize,DataTypes)=>{
         },
         password:{
             type: Sequelize.STRING(60),
-            allowNull: false, 
+            allowNull: true, 
         },
-        prvider :{ // 뭐로 로그인 했는지 : 카카오, 로컬,,
+        provider :{ // 뭐로 로그인 했는지 : 카카오, 로컬,,
             type: Sequelize.STRING(10),
             allowNull: false,
             defaultValue: 'local',
         },
         sns_id:{
-            type: Sequelize.STRING(30),
+            type: Sequelize.STRING(60),
             allowNull: true,
         },
 
@@ -37,5 +37,7 @@ module.exports = ((sequelize,DataTypes)=>{
         timestamps:true,
         tableName: 'user',
         paranoid : true, // 삭제일 (복구용)
+        charset: 'utf8',
+        collate: 'utf8_general_ci',
     })
 })
