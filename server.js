@@ -39,11 +39,12 @@ const mySqlOption = {
 const sessionStore = new mySqlStore(mySqlOption);
 app.use(session({
   resave:false,
-  saveUninitialized:false,
+  saveUninitialized:true,
   secret:process.env.COOKIE_SECRET,
   cookie:{
     httpOnly:true,
     secure:false,
+    maxAge: 60 * 60 * 1000,
   },
   store: sessionStore
 }));
@@ -63,11 +64,18 @@ app.use(passport.session());
 passportLocalConfig();
 passportGoogleConfig();
 
+app = require("./config.js")
+
 app.get("/",(req,res) => {
     //res.json({message:"hello"});
     res.sendFile(__dirname + '/view/login_test.html');
 });
 
+
+app.get("/test",(req,res) => {
+  //res.json({message:"hello"});
+  res.sendFile(__dirname + '/view/test.html');
+});
 //const chatRouter = require('./routes/api/chat');
 
 

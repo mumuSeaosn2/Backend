@@ -10,6 +10,14 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
     res.send(req.user.user_name);
 });
 
+router.get('/test',(req, res) => {
+    if(req.isAuthenticated()) {
+        res.send(req.user);
+    }
+});
+
+
+
 //login-google
 router.get('/login/google', passport.authenticate('google',{ scope: ["email", "profile"] }));
 

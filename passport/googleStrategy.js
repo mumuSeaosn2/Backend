@@ -5,11 +5,14 @@ const { User } = require('../models');
 
 module.exports = () => {
     passport.serializeUser((user, done) => {
-        done(null, user);
+        done(null, user.email);
     });
     
     passport.deserializeUser((user, done) => {
-        done(null, user);
+        console.log("google deserialize find");
+        User.findOne({where: {email: email},
+            attributes: ['id','email','user_name','provider'],
+        }).then(result => {done(null,result)}).catch(err => {console.log(err);});
     });
 
     passport.use( new googleStrategy(
