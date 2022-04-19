@@ -21,9 +21,9 @@ services:
     container_name: mumuseason2-database
     image: mysql:5.7
     environment:
-      - MYSQL_DATABASE=mumu2db
-      - MYSQL_ROOT_PASSWORD=admin
-      - MYSQL_TCP_PORT= 5432
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_TCP_PORT= ${DB_PORT}
     ports:
       - "5432:5432"
     volumes:
