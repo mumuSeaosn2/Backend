@@ -1,3 +1,5 @@
 node_modules/
 view/
 .env
+test.html
+login_test.html

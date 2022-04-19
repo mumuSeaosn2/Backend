@@ -8,7 +8,7 @@ const Friend = function(friend) {
   };
 
 Friend.create = (newfriend, results) => {
-  model.User.adduserFriends({
+  model.User.adduserFollows({
     userId : newfriend.userId,
     friendId : newfriend.friendId,
     })
@@ -31,15 +31,15 @@ Friend.findById = (newfriend, results) => {
         where: {id : newfriend.userId},
         include:[{
           model:User,
-          as: 'friend',
+          as: 'following',
           attributes: ['id'],
       }]
     }).then(result => {
             
             const json=JSON.stringify(result);
-            console.log(json);
+            console.log(jnewfriendson);
             const obj = JSON.parse(json)
-            console.log(obj.friend.id);
+            console.log("test"+{...result});
             results(null,result);
         }
       ).catch(err => 

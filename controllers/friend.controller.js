@@ -1,5 +1,6 @@
 const Friend = require("../service/friend.service.js");
-
+//const { findIdByEmail } = require("../service/user.service");
+const model = require("../models")
 exports.friendAdd = (req, res) => {
     // Validate request
     if (!req.body) {
@@ -9,16 +10,27 @@ exports.friendAdd = (req, res) => {
    };
    // Create friend relationship
    //const body = req.body;
-
-   const friend = new Friend({
-     userId : req.params.userId,
-     friendId : req.params.friendId,
+   const email=req.session.passport.user;
+   
+   const userId = model.User.findOne({
+    where : { email : email }
+  }).then(result => {return result.id;})
+   
+  const friendId = model.User.findOne({
+    where : { email : req.params.friendEmail }
+  }).then(result => {return result.id;})
+   
+  console.log("after"+userId,friendId);
+  
+  const friend = new Friend({
+     userId : userId,
+     friendId : friendId,
    });
-   try{
+  try{
     Friend.findById(friend, async (err, data) => {
        if (err === null) {
          if(data === null) {
-           await Friend.create(friend, (err, data) => {
+           await Friend.addfollowing(friend, (err, data) => {
              if (err) res.status(500).send({message : err.message 
                || "Some error occurred while creating the User."
                })

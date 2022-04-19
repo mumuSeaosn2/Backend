@@ -40,10 +40,11 @@ db.RoomList.hasMany(db.Chat);
 db.Chat.belongsTo(db.RoomList);
 
 db.User.hasMany(db.RoomList);
-db.RoomList.belongsToMany(db.User,{through:'ChatAndUser'})
+db.RoomList.belongsToMany(db.User,{through:'ChatAndUser'});
 
 //user self join
-db.User.belongsToMany(db.User,{as:'friend',through:'userFriends'})
+db.User.belongsToMany(db.User,{as:'follower',through:'Follow',foreignKey: 'FollowingId'});
+db.User.belongsToMany(db.User,{as:'following',through:'Follow',foreignKey: 'FollowerId'});
 
 
 db.sequelize = sequelize;

@@ -8,9 +8,8 @@ const passport = require('passport');
 exports.userCreate = (req, res) => {
    // Validate request
    if (!req.body) {
-    res.status(400).send({
-      message: "Content can not be empty!"
-    });
+    res.status(400).send({message: "Content can not be empty!"});
+    return;
   };
   // Create a User
   //const body = req.body;
@@ -63,8 +62,9 @@ exports.userCreate = (req, res) => {
 
 // Retrieve all Tutorials from the database (with condition).
 exports.userFindAll = (req, res) => {
-    const name = req.query.email;
-    User.getAll(name, (err, data) => {
+    const email = req.query.email;
+    console.log(email)
+    User.getAll(email, (err, data) => {
       if (err)
         res.status(500).send({
           message:
@@ -93,6 +93,23 @@ exports.userFindOne = (req, res) => {
       });
 };
 
+exports.userFindId = (email,req, res) => {
+  //console.log(email)
+    User.findIdByEmail(email, (err, data) => {
+        if (err) {
+          if (err.kind === "not_found") {
+            res.status(404).send({
+              message: `Not found User with id ${req.params.email}.`
+            });
+          } else {
+            res.status(500).send({
+              message: "Error retrieving User with id " + req.params.email
+            });
+          }
+        } else res.send(data);
+      });
+};
+
 
 // Update a User identified by the id in the request
 exports.userUpdate = (req, res) => {
@@ -102,6 +119,10 @@ exports.userUpdate = (req, res) => {
       message: "Content can not be empty!"
     });
   }
+  if (!req.isAuthenticated()) {
+    res.status(401).send({message: "please login"});
+    return;
+    };
   console.log(req.body);
   User.updateById(
     req.params.id,
@@ -125,6 +146,10 @@ exports.userUpdate = (req, res) => {
 
 // Delete a User with the specified id in the request
 exports.userDelete = (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).send({message: "please login"});
+    return;
+    };
     User.remove(req.params.id, (err, data) => {
         if (err) {
           if (err.kind === "not_found") {
