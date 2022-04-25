@@ -3,7 +3,7 @@ const friend = require("../../controllers/friend.controller.js");
 const router = express.Router();
 
 // Create friend relationship
-router.post("/add/:friendEmail", friend.friendAdd);
+router.post("/add/:friendId", friend.friendAdd);
 
 // Retrieve all friends of user
 //router.get("/list/:id", friend.friendFind);
@@ -24,7 +24,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /friend/add/{friendEmail}:
+ * /friend/add/{friendId}:
  *   post:
  *     summary: Create friend relationship
  *     description: Only admins can create other users.
@@ -33,11 +33,11 @@ module.exports = router;
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: friendEmail
+ *         name: friendId
  *         required: true
  *         schema:
  *           type: string
- *         description: friend Email
+ *         description: friend Id
  *     responses:
  *       "200":
  *         description: Created

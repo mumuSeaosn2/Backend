@@ -49,9 +49,11 @@ User.findById = (email, results) => {
 
 User.findIdByEmail = (email) => {
   model.User.findOne({
-    //raw : true,
+    raw : true,
     where : { email : email },
-    //attributes : ['id']
+    attributes : ['id']
+  }).then(result =>{
+    return result;
   })
 };
 

@@ -32,22 +32,26 @@ Friend.findById = (newfriend, results) => {
         include:[{
           model:User,
           as: 'following',
-          attributes: ['id'],
       }]
-    }).then(result => {
-            
-            const json=JSON.stringify(result);
-            console.log(jnewfriendson);
-            const obj = JSON.parse(json)
-            console.log("test"+{...result});
-            results(null,result);
-        }
-      ).catch(err => 
-        {results(err,null);
-        console.log(err);
+    }).then(user => {
+      console.log(user.length);
+      console.log(newfriend.FriendId);
+      if(!user){
+        results(null,null);
         return;
-      });
-
+      }
+      model.User.findAll({
+        raw : true,
+        where : {FollowingId :  newfriend.FriendId},
+      }).then( result => {
+        console.log(result.length)
+        console.log(result)
+        results(null,result)
+      })
+    }).catch(err => {
+      console.log(err);
+      results(ree,null);
+    })
     
   };
 
