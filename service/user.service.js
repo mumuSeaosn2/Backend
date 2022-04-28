@@ -31,18 +31,18 @@ User.create = (newUser, results) => {
 User.findById = (email, results) => {
   model.User.findOne({
     raw : true,
-    where : { email : email },
-    attributes : ['id','email','user_name']
+    where : { id : email },
+    //attributes : ['id','email','user_name']
   })
   .then(result => 
       {console.log("find user: ",result);
       results(null,result)
-      return;
+      //return;
     })
     .catch(err => 
       {results(err,null);
       console.log(err);
-      return;
+      //return;
     });
 };
 
