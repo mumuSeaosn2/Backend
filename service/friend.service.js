@@ -7,53 +7,39 @@ const Friend = function(friend) {
     this.friendId = friend.friendId;
   };
 
-Friend.create = (newfriend, results) => {
-  model.User.adduserFollows({
-    userId : newfriend.userId,
-    friendId : newfriend.friendId,
-    })
-    .then(result => 
-      {console.log("friend relationship is created: ",{ ...newfriend });
-      results(null,{ ...newfriend })
-      return;
-    })
-    .catch(err => 
-      {results(err,null);
-      console.log(err);
-      return;
-    });
+Friend.create = async (newfriend, results) => {
+  const user = await User.findOne({ where: { id: newfriend.userId } });
+  const friend = await User.findOne({ where: { id: newfriend.friendId } });
+  if(friend){
+    if (user) {
+      await user.addFollowing(friendId).
+      then(result => {
+        console.log('add friend'+newfriend.userId+','+newfriend.friendId)
+        results(null,result)
+      }).catch(err => {
+        console.log(err);
+        results(err,null);
+      })
+    }
+  }else{
+    res.status(404).send('there is no user wit id:'+newfriend.friendId);
+  }
 };  
 
-Friend.findById = (newfriend, results) => {
-    model.User.findAll({
-        raw:true,
+  Friend.friendFind = async(Userid,results) => {
+    const user = await model.User.findOne({where: {id: Userid}})
+    await user.getFollowings({
         attributes: [],
-        where: {id : newfriend.userId},
-        include:[{
-          model:User,
-          as: 'following',
-      }]
-    }).then(user => {
-      console.log(user.length);
-      console.log(newfriend.FriendId);
-      if(!user){
-        results(null,null);
-        return;
-      }
-      model.User.findAll({
-        raw : true,
-        where : {FollowingId :  newfriend.FriendId},
-      }).then( result => {
-        console.log(result.length)
-        console.log(result)
-        results(null,result)
-      })
-    }).catch(err => {
-      console.log(err);
-      results(ree,null);
+        joinTableAttributes: ['followingId']
+
+    }).then(result => {
+        results(null,result);
+    }).catch(err =>{
+        results(err,null);
+        console.log(err);
     })
-    
-  };
+};
+
 
 
 module.exports = Friend;
