@@ -5,15 +5,16 @@ const Room = function(room) {
     this.email = room.email;
 };
 
-Room.create = (id,results) => {
-    model.RoomList.create({
-        userId:id,
-        raw:true,
-        attribures:["id","userId"]
-    }).then(result =>
-        {console.log("create new room: ",result)
-        results(null,result);
-        return;
+Room.create = async(Userid,results) => {
+    await model.RoomList.create({
+        raw: true
+    }).then(async result =>
+        {   
+            const room = await model.RoomList.findOne({where: {id: result.id}})
+            console.log("create new room: ",result)
+            await room.addUser(Userid);
+            results(null,result);
+            return;
     })
     .catch(err =>
         {results(err,null);
@@ -77,22 +78,37 @@ Room.delete = (id,results) => {
 };
 
 
-Room.JoinById = (id, results) => {
-    model.RoomList.findAll({
-      where: {userId:id},
-      attributes:['id'],
-    })
-    .then(result => 
-        {console.log("find rooms: ",result);
-        results(null,result)
-        return;
-      })
-      .catch(err => 
-        {results(err,null);
+
+Room.JoinById = async(Userid,results) => {
+    const user = await model.User.findOne({where: {id: Userid}})
+    await user.getRoomLists({
+        attributes: [],
+        joinTableAttributes: ['RoomListId']
+
+    }).then(result => {
+        results(null,result);
+    }).catch(err =>{
+        results(err,null);
         console.log(err);
-        return;
-    });
+    })
 };
+
+Room.getInRoom = async(RoomId,UserId,results) => {
+    const room = await model.RoomList.findOne({where: {id: RoomId}})
+    if (room) {
+        results(err,null);
+        console.log(err);
+    }
+    await room.addUser(UserId)
+    .then(results =>{
+        results(null,result);
+    }).catch(err =>{
+        results(err,null);
+        console.log(err);
+    })
+
+};
+
 
 
 module.exports = Room;

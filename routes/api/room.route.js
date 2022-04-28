@@ -12,6 +12,9 @@ router.get("/list",room.roomFindAll);
 //Retrive roomList by user email
 router.get("/list/:id",room.roomFindById);
 
+//Retrive roomList by user email
+router.post("/getin/:id",room.getInRoom);
+
 /*
 //Retrive a room with id
 //router.get("/:id",room.roomFindOne)
@@ -150,3 +153,35 @@ module.exports = router;
  *       "404":
  *         $ref: '#/components/responses/NotFound'
  */
+
+/**
+ * @swagger
+ * /room/getin/{id}:
+ *   get:
+ *     summary : get in to room
+ *     description: 
+ *     tags: [room]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: room Id
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Room'
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ */
+
