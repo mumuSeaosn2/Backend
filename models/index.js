@@ -26,27 +26,24 @@ module.exports = connection;
 
 const Sequelize = require('sequelize');
 const dbConfig = require("../config/db.config");
+const User = require('./user');
+const RoomList = require('./roomlist');
+const Chat = require('./chat')
 const db = {};
 
 const sequelize = new Sequelize(dbConfig.database,dbConfig.username,dbConfig.password,dbConfig);
-db.User=require('./user')(sequelize,Sequelize);
-db.RoomList=require('./roomlist')(sequelize,Sequelize);
-db.Chat=require('./chat')(sequelize,Sequelize);
-
-db.User.hasMany(db.Chat);
-db.Chat.belongsTo(db.User);
-
-db.RoomList.hasMany(db.Chat);
-db.Chat.belongsTo(db.RoomList);
-
-db.User.hasMany(db.RoomList);
-db.RoomList.belongsToMany(db.User,{through:'ChatAndUser'});
-
-//user self join
-db.User.belongsToMany(db.User,{as:'follower',through:'Follow',foreignKey: 'FollowingId'});
-db.User.belongsToMany(db.User,{as:'following',through:'Follow',foreignKey: 'FollowerId'});
-
 
 db.sequelize = sequelize;
+db.User = User;
+db.RoomList = RoomList;
+db.Chat = Chat;
+
+User.init(sequelize);
+RoomList.init(sequelize);
+Chat.init(sequelize);
+
+User.associate(db);
+RoomList.associate(db);
+Chat.associate(db);
 
 module.exports = db;
