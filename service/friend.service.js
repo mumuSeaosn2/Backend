@@ -71,6 +71,7 @@ Friend.followerNotfollowing = async(Userid,results) => {
   }).then(result => 
     {
       const jsonObj = [];
+      const finalJsonData = [];
       const task=[
         call => {
           if(result.length==0){results(null,result);}
@@ -81,17 +82,33 @@ Friend.followerNotfollowing = async(Userid,results) => {
           }
         },
         (jsonObj,call) => {
-          const i=0;
+          let i=0;
           const list=[];
-          jsonObj.forEach(async element => {
-            await db.sequelize.models.Follow.findOne({
+          jsonObj.forEach( element => {
+              db.sequelize.models.Follow.findOne({
               where:{followingId:element.followerId,followerId:Userid}
             }).then(follow => {
               if(follow == null)
                 list.push(element.followerId)
+                i++;
+                if(i==jsonObj.length)
+                  call(null,list);
             })
           })
-          console.log(list);
+        },
+        (list,call)=>{
+          let i=0;
+          list.forEach( element =>{
+            model.User.findOne({
+              attributes: ['id','user_name'],
+              where:{id:element}
+            }).then(result => {
+              if(result) finalJsonData.push(result.dataValues);
+              i++;
+              if(i==list.length)
+                results(null,finalJsonData)
+            })
+          })
         }
       ];
       async.waterfall(task,(err)=>{
