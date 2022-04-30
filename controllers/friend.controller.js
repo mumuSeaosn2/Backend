@@ -23,7 +23,7 @@ exports.friendAdd = async(req, res) => {
     if (err)
         res.status(500).send({
             message:
-                err.message || "Some error occurred while creating rommList."
+                err.message || "Some error occurred"
         });
         else {
           req.app.get('io').of('/room').emit('newRoom', data);
@@ -38,17 +38,46 @@ exports.friendFind = async(req,res) => {
       message: "Content can not be empty!"
     });
   };
-
-
   Friend.friendFind(req.user.id,(err,data) => {
     if (err)
         res.status(500).send({
             message:
-                err.message || "Some error occurred while creating rommList."
+                err.message || "Some error occurred"
         });
-        else {
-          req.app.get('io').of('/room').emit('newRoom', data);
-          res.send(data);
-        }
+      else res.send(data);
+    });
+    
+}
+
+exports.friendRecommend = async(req,res) => {
+  Friend.friendRecommend(req.user.id,(err,data) => {
+    if (err)
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred"
+        });
+    else res.send(data);
+    });
+}
+
+exports.followerNotfollowing = async(req,res) => {
+  Friend.followerNotfollowing(req.user.id,(err,data) => {
+    if (err)
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred"
+        });
+    else res.send(data);
+    });
+}
+
+exports.allFollower = async(req,res) => {
+  Friend.allFollower(req.user.id,(err,data) => {
+    if (err)
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred"
+        });
+    else res.send(data);
     });
 }

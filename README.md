@@ -34,6 +34,12 @@ desc <table name>;
 or
 show tables;
 ```
+
+## add dummy data
+```
+docker exec -it mumuseason2-api sh
+npx sequelize-cli db:seed:all
+```
 ## License
 
 [MIT](LICENSE)

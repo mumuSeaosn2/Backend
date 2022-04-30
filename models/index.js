@@ -25,7 +25,7 @@ module.exports = connection;
 */
 
 const Sequelize = require('sequelize');
-const dbConfig = require("../config/db.config");
+const dbConfig = require("../config/config");
 const User = require('./user');
 const RoomList = require('./roomlist');
 const Chat = require('./chat')
