@@ -64,8 +64,6 @@ app.use(passport.session());
 passportLocalConfig();
 passportGoogleConfig();
 
-app = require("./config.js")
-
 app.get("/",(req,res) => {
     //res.json({message:"hello"});
     res.sendFile(__dirname + '/view/login_test.html');
