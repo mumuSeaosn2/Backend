@@ -5,12 +5,12 @@ const bcrypt = require('bcryptjs');
 
 module.exports = () => {
     passport.serializeUser((user, done) => {
-        done(null, user.email);
+        done(null, user.id);
     });
     
     passport.deserializeUser((email, done) => {
         console.log("local deserialize find");
-        User.findOne({where: {email: email},
+        User.findOne({where: {id: id},
             attributes: ['id','email','user_name','provider'],
         }).then(result => {done(null,result)}).catch(err => {console.log(err);});
     });
@@ -25,11 +25,10 @@ module.exports = () => {
               console.log("password find");
               const userFound = await User.findOne({
                   where: {email: email},
-                  attributes: ['email','password','user_name'],
+                  attributes: ['id','email','password','user_name','provider'],
               });
-              if(userFound) {
+              if(userFound && (userFound.provier == 'local')) {
                 const comp = await bcrypt.compare(password, userFound.password);
-                delete userFound['password'];
 
                 if(comp) {
                     done(null, userFound);
