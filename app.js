@@ -5,15 +5,16 @@ const morgan = require('morgan');
 const passport = require('passport');
 const session = require('express-session');
 const cookieparser = require('cookie-parser');
-const routes = require("./routes/api/");
+const apiroutes = require("./routes/api/");
+const authroutes = require("./routes/auth/");
+const docs = require("./routes/api/docs.route");
 const { sequelize } = require("./models");
-const passportConfig = require('./passport/localStrategy');
+const passportLocalConfig = require('./passport/localStrategy');
+const passportGoogleConfig = require('./passport/googleStrategy');
 const cookieParser = require('cookie-parser');
 const mySqlStore = require('express-mysql-session')(session);
 
 const app = express();
-
-app.set('port', process.env.PORT || 3000);
 
 //enable cors
 app.use(cors());
@@ -42,11 +43,12 @@ const sessionStore = new mySqlStore(mySqlOption);
 
 app.use(session({
   resave:false,
-  saveUninitialized:false,
+  saveUninitialized:true,
   secret:process.env.COOKIE_SECRET,
   cookie:{
     httpOnly:true,
     secure:false,
+    maxAge: 60 * 60 * 1000,
   },
   store: sessionStore
 }));
@@ -63,16 +65,42 @@ sequelize.sync({ force: false })
 //passport init
 app.use(passport.initialize());
 app.use(passport.session());
-passportConfig();
+passportLocalConfig();
+passportGoogleConfig();
+
+//app = require("./config.js")
+
 
 app.get("/",(req,res) => {
-    res.json({message:"hello"});
+    //res.json({message:"hello"});
+    res.sendFile(__dirname + '/login_test.html');
 });
 
-app.use('/',routes);
+
+app.get("/test",(req,res) => {
+  //res.json({message:"hello"});
+  res.sendFile(__dirname + '/test.html');
+});
+//const chatRouter = require('./routes/api/chat');
+
+const authenticateUser = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.status(401).send({message: "Auth is required"});
+  }
+};
+
+app.use('/api',authenticateUser,apiroutes);
+app.use('/',authroutes);
+//app.use('chat',chatRouter);
+
+app.use('/docs',docs);
 
 
+app.set('port', process.env.PORT || 3000);
 
+module.exports = app;
 //app.use('/docs',swaggerUi.serve,swaggerUi.setup(swaggerDefinition));
 
 

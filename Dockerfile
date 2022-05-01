@@ -7,6 +7,7 @@ COPY pakage*.json ./
 RUN yarn install
 
 RUN yarn global add nodemon
+RUN yarn global add sequelize-cli
 #개발시
 CMD ["nodemon","-L","server.js"]
 

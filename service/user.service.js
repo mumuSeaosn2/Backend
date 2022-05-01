@@ -31,19 +31,30 @@ User.create = (newUser, results) => {
 User.findById = (email, results) => {
   model.User.findOne({
     raw : true,
-    where : { email : email },
-    attributes : ['id','email','user_name']
+    where : { id : email },
+    //attributes : ['id','email','user_name']
   })
   .then(result => 
       {console.log("find user: ",result);
       results(null,result)
-      return;
+      //return;
     })
     .catch(err => 
       {results(err,null);
       console.log(err);
-      return;
+      //return;
     });
+};
+
+
+User.findIdByEmail = (email) => {
+  model.User.findOne({
+    raw : true,
+    where : { email : email },
+    attributes : ['id']
+  }).then(result =>{
+    return result;
+  })
 };
 
 // User.findByEmail = (email, results) => {
@@ -67,27 +78,29 @@ User.findById = (email, results) => {
 
 User.getAll = (user_email, results) => {
   if (user_email){
-    model.User.findAll({
+    model.User.findOne({
       raw: true,
-      where: {user_email:user_email},
+      where: {email:user_email},
       attributes:['id','email','user_name']
     })
     .then(result => 
-        {console.log("find user: ",{...result});
+        {console.log("find user1: ",{...result});
         results(null,result);
+        return;
       })
       .catch(err => 
         {results(err,null);
         console.log(err);
         return;
       });
-  }else{
+  }
+  else{
     model.User.findAll({
       raw: true,
       attributes:['id','email','user_name']
     })
     .then(result => 
-        {console.log("find user: ",{ ...result});
+        {console.log("find user2: ",{ ...result});
         results(null,result);
         return;
       })

@@ -52,3 +52,18 @@ exports.roomFindById = (req, res) => {
         }
     })
 };
+
+exports.getInRoom = (req, res) => {
+  userId=req.user.id
+  Room.getInRoom(req.params.id,userId,(err,data) => {
+      if (err)
+          res.status(500).send({
+              message:
+                  err.message || "Some error occurred while admitting to room."
+          });
+          else {
+            req.app.get('io').of('/room').emit('newRoom', data);
+            res.send(data);
+          }
+  });
+};

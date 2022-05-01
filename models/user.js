@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize');
 
-module.exports = ((sequelize,DataTypes)=>{
-    return sequelize.define('user',{
+module.exports = class User extends Sequelize.Model {
+  static init(sequelize) {
+    return super.init({
         id : {
             type: Sequelize.INTEGER,
             autoIncrement: true,
@@ -33,11 +34,28 @@ module.exports = ((sequelize,DataTypes)=>{
         },
 
     },{
-        
+        sequelize,
         timestamps:true,
         tableName: 'user',
         paranoid : true, // 삭제일 (복구용)
         charset: 'utf8',
         collate: 'utf8_general_ci',
     })
-})
+  }
+
+  static associate(db) {
+    db.User.belongsToMany(db.User, {
+      foreignKey: 'followingId',
+      as: 'Followers',
+      through: 'Follow',
+    });
+    db.User.belongsToMany(db.User, {
+      foreignKey: 'followerId',
+      as: 'Followings',
+      through: 'Follow',
+    });
+
+    db.User.belongsToMany(db.RoomList, { through: 'RoomUser' });
+    db.User.hasOne(db.Chat);
+  }
+};

@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize');
 
-module.exports = ((sequelize,DataTypes)=>{
-    return sequelize.define('chat',{
+module.exports = class Chat extends Sequelize.Model {
+    static init(sequelize) {
+      return super.init({
         id : {
             type: Sequelize.INTEGER,
             autoIncrement: true,
@@ -16,10 +17,16 @@ module.exports = ((sequelize,DataTypes)=>{
             type: Sequelize.STRING(255),
             allowNull: false,
         },
-    },{
-        
+    }, {
+        sequelize,
         timestamps:true,
         tableName: 'chat',
         paranoid : true, // 삭제일 (복구용)
-    })
-})
+      });
+    }
+  
+    static associate(db) {
+      db.Chat.belongsTo(db.RoomList);
+      db.Chat.belongsTo(db.User);
+    }
+  };
