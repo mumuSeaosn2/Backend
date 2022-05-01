@@ -42,6 +42,10 @@ db.Chat.belongsTo(db.RoomList);
 db.User.hasMany(db.RoomList);
 db.RoomList.belongsToMany(db.User,{through:'ChatAndUser'})
 
+//user self join
+db.User.belongsToMany(db.User,{as:'friend',through:'userFriends'})
+
+
 db.sequelize = sequelize;
 
 module.exports = db;
