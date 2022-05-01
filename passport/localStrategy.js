@@ -5,11 +5,14 @@ const bcrypt = require('bcryptjs');
 
 module.exports = () => {
     passport.serializeUser((user, done) => {
-        done(null, user);
+        done(null, user.id);
     });
     
-    passport.deserializeUser((user, done) => {
-        done(null, user);
+    passport.deserializeUser((email, done) => {
+        console.log("local deserialize find");
+        User.findOne({where: {id: id},
+            attributes: ['id','email','user_name','provider'],
+        }).then(result => {done(null,result)}).catch(err => {console.log(err);});
     });
 
     passport.use(new LocalStrategy({
@@ -19,15 +22,21 @@ module.exports = () => {
         passReqToCallback: false,
       }, async (email, password, done) => {
           try {
+              console.log("password find");
               const userFound = await User.findOne({
                   where: {email: email},
-                  attributes: ['email','user_name','password'],
+                  attributes: ['id','email','password','user_name','provider'],
               });
-              const comp = await bcrypt.compare(password, userFound.password);
-              if(comp) {
-                  done(null, userFound);
+              if(userFound && (userFound.provier == 'local')) {
+                const comp = await bcrypt.compare(password, userFound.password);
+
+                if(comp) {
+                    done(null, userFound);
+                } else {
+                    done(null, false);
+                }
               } else {
-                  done(null, false);
+                  done(null,null);
               }
 
           } catch(error) {
@@ -35,42 +44,3 @@ module.exports = () => {
           }
       }));
     }
-    //     await User.findOne({where : {email: email}}, (findError, user) => {
-    //       if (findError) return done(findError); // 서버 에러 처리
-    //       if (!user) return done(null, false, { message: '존재하지 않는 아이디입니다' }); // 임의 에러 처리
-    //       return bcrypt.compare(password, user.password, (passError, isMatch) => {
-    //         if (isMatch) {
-    //           return done(null, user); // 검증 성공
-    //         }
-    //         return done(null, false, { message: '비밀번호가 틀렸습니다' }); // 임의 에러 처리
-    //       });
-    //     });
-    //   }));
-    // };
-
-//     passport.use(new LocalStrategy({
-//         usernameField : 'email',
-//         passwordField : 'password',
-//     }, async (email, password, done) => {
-//         try{
-//             await User.findOne({where: {email:email}}, (err, user) => {
-//                 if(err) {
-//                     done(err);
-//                 }
-
-//                 if(!user) {
-//                     done(null, false, {message:'미가입 회원'});
-//                 } else {
-//                     const result = bcrypt.compare(password, user.password);
-//                     if(result) {
-//                         done(null, user);
-//                     } else {
-//                         done(null, false, {message:'비밀번호 불일치'})
-//                     }
-//                 }
-//             });
-//         }catch(err) {
-//             console.error(err);
-//             done(err);
-//         }
-//     }));
