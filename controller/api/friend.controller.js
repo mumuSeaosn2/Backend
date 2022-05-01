@@ -1,5 +1,5 @@
 const express = require('express');
-const friend = require("../../controllers/friend.controller.js");
+const friend = require("../../service/friend.service.js");
 const router = express.Router();
 
 // Create friend relationship

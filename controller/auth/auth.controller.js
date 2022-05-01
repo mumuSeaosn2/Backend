@@ -1,5 +1,5 @@
 const express = require('express');
-const auth = require("../../controllers/auth.controller.js");
+const auth = require("../../service/auth.service.js");
 const passport = require('passport');
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.post('/login', passport.authenticate('local'),(req, res) => {
             message:"request could not be empty",
         })
     }
-    res.send(req.session.passport.user.user_name);
+    res.send(req.user.user_name);
 });
 
 router.get('/test',(req, res) => {

@@ -5,7 +5,7 @@ const { User } = require('../models');
 
 module.exports = () => {
     passport.serializeUser((user, done) => {
-        done(null, user.email);
+        done(null, user.id);
     });
     
     passport.deserializeUser((user, done) => {
@@ -32,7 +32,7 @@ module.exports = () => {
                         email: profile.email,
                         provider: "google",
                     },
-                    attributes: ['email','user_name','password'],
+                    attributes: ['id','email','user_name'],
                 });
 
                 if(userFound) {

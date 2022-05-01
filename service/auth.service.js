@@ -1,4 +1,4 @@
-const User = require("../service/user.service.js");
+const User = require("../repository/user.repository.js");
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 

@@ -8,7 +8,7 @@ module.exports = () => {
         done(null, user.id);
     });
     
-    passport.deserializeUser((email, done) => {
+    passport.deserializeUser((id, done) => {
         console.log("local deserialize find");
         User.findOne({where: {id: id},
             attributes: ['id','email','user_name','provider'],
@@ -27,7 +27,8 @@ module.exports = () => {
                   where: {email: email},
                   attributes: ['id','email','password','user_name','provider'],
               });
-              if(userFound && (userFound.provier == 'local')) {
+              console.log(userFound.provider)
+              if(userFound && (userFound.provider == 'local')) {
                 const comp = await bcrypt.compare(password, userFound.password);
 
                 if(comp) {

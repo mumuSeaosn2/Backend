@@ -19,7 +19,7 @@ const swaggerDefinition = {
   
   var options = {
     swaggerDefinition: swaggerDefinition,
-    apis: ['docs/*.yml', 'routes/api/*.js'],
+    apis: ['docs/*.yml', 'controller/api/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

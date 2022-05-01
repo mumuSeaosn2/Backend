@@ -1,114 +1,69 @@
-const model = require("../models");
+const Room = require("../repository/room.repository.js");
 
-const Room = function(room) {
-    this.user_name = room.user_name;
-    this.email = room.email;
-};
-
-Room.create = async(Userid,results) => {
-    await model.RoomList.create({
-        raw: true
-    }).then(async result =>
-        {   
-            const room = await model.RoomList.findOne({where: {id: result.id}})
-            console.log("create new room: ",result)
-            await room.addUser(Userid);
-            results(null,result);
-            return;
-    })
-    .catch(err =>
-        {results(err,null);
-        console.log(err);
-        return;
-        });
-        
-};
-
-Room.findAll = (roomId,results) =>{
-    if(roomId){
-        model.RoomList.findAll({
-            raw: true,
-            where : {id:roomId},
-            attributes:['id']
-        })
-        .then(result =>
-            {console.log("find room: ",{...result})
-            results(null,result);
-            return;
-        })
-        .catch(err =>{
-            results(err,null);
-            console.log(err);
-            return;
-        });
-    }
-    else{
-        model.RoomList.findAll({
-            raw:true,
-            attributes:['id']
-        })
-        .then(result => {
-            console.log("find user: ",{...result});
-            results(null,result);
-            return;
-        })
-        .catch(err =>{
-            results(null,result);
-            console.log(err);
-            return;
-        });
-    }
-};
-
-
-Room.delete = (id,results) => {
-    model.RoomList.destroy({
-        where:{id:id}
-    })
-    .then(result => {
-        if(result == 0) throw "already deleted"
-        console.log("delete room: ",result);
-        results(null,result);
-        return;
-    }).catch(err =>{
-        results(err,null);
-        console.log(err);
-        return;
+exports.roomCreate = (req, res) => {
+    Room.create(req.params.id,(err,data) => {
+        if (err)
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while creating rommList."
+            });
+            else {
+              req.app.get('io').of('/room').emit('newRoom', data);
+              res.send(data);
+            }
     });
 };
 
+exports.roomFindAll = (req, res) => {
+    const id = req.query.id;
+    Room.findAll(id , (err,data) => {
+        if(err)
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving roomlist."
+            });
+        else res.send(data);
+    });
+};
 
+exports.roomDelete = (req,res) => {
+    Room.delete(req.params.id, (err,data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+              res.status(404).send({
+                message: `Not found Room with id ${req.params.id}.`
+              });
+            } else {
+              res.status(500).send({
+                message: "Could not delete Room with id " + req.params.id
+              });
+            }
+          } else res.send({ message: `Room was deleted successfully!` });
+        });
+};
 
-Room.JoinById = async(Userid,results) => {
-    const user = await model.User.findOne({where: {id: Userid}})
-    await user.getRoomLists({
-        attributes: [],
-        joinTableAttributes: ['RoomListId']
-
-    }).then(result => {
-        results(null,result);
-    }).catch(err =>{
-        results(err,null);
-        console.log(err);
+exports.roomFindById = (req, res) => {
+    Room.JoinById(req.params.id, async(err,data)=>{
+        if(err){
+          res.status(500).send({message:"Error in server"})
+        }
+        else{
+          res.send(data)
+        }
     })
 };
 
-Room.getInRoom = async(RoomId,UserId,results) => {
-    const room = await model.RoomList.findOne({where: {id: RoomId}})
-    if (room) {
-        results(err,null);
-        console.log(err);
-    }
-    await room.addUser(UserId)
-    .then(results =>{
-        results(null,result);
-    }).catch(err =>{
-        results(err,null);
-        console.log(err);
-    })
-
+exports.getInRoom = (req, res) => {
+  userId=req.user.id
+  Room.getInRoom(req.params.id,userId,(err,data) => {
+      if (err)
+          res.status(500).send({
+              message:
+                  err.message || "Some error occurred while admitting to room."
+          });
+          else {
+            req.app.get('io').of('/room').emit('newRoom', data);
+            res.send(data);
+          }
+  });
 };
-
-
-
-module.exports = Room;

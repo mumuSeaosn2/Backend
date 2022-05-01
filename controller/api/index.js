@@ -1,9 +1,9 @@
 const express = require('express');
-const userRoute = require('./user.route');
-const docsRoute = require('./docs.route');
+const userRoute = require('./user.controller');
+const docsRoute = require('./docs.controller');
 ///const authRoute = require('../auth.route');
-const roomRoute = require('./room.route');
-const friendRoute = require('./friend.route');
+const roomRoute = require('./room.controller');
+const friendRoute = require('./friend.controller');
 const chatRoute = require('./chat')
 
 const router = express.Router();

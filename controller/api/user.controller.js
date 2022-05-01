@@ -1,5 +1,5 @@
     const express = require('express');
-    const user = require("../../controllers/user.controller.js");
+    const user = require("../../service/user.service.js");
     const router = express.Router();
   
     // Create a new Tutorial
