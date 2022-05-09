@@ -17,8 +17,20 @@ const mySqlStore = require('express-mysql-session')(session);
 const app = express();
 
 //enable cors
-app.use(cors());
-app.options('*',cors());
+/*
+const  corsOptions = {
+  origin:"http://localhost:8080/",
+  credential: true,
+};
+app.use(cors(corsOptions));*/
+app.use( cors({ 
+  origin: [  
+    "http://localhost:8080" ], 
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+     preflightContinue: false, 
+     optionsSuccessStatus: 204, 
+     credentials: true, }) );
+
 
 //parse json request body
 app.use(express.json())
@@ -43,7 +55,7 @@ const sessionStore = new mySqlStore(mySqlOption);
 
 app.use(session({
   resave:false,
-  saveUninitialized:true,
+  saveUninitialized:false,
   secret:process.env.COOKIE_SECRET,
   cookie:{
     httpOnly:true,
