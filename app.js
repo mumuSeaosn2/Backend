@@ -95,17 +95,9 @@ app.get("/test",(req,res) => {
 });
 //const chatRouter = require('./routes/api/chat');
 
-app.use('/auth',authroutes);
+app.use('/',authroutes);
 
-const authenticateUser = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.status(401).send({message: "Auth is required"});
-  }
-};
-
-app.use('/',authenticateUser,apiroutes);
+app.use('/',apiroutes);
 
 //app.use('chat',chatRouter);
 
