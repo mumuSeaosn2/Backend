@@ -38,8 +38,11 @@ exports.roomDelete = (req,res) => {
                 message: "Could not delete Room with id " + req.params.id
               });
             }
-          } else res.send({ message: `Room was deleted successfully!` });
-        });
+          }
+        else{
+          res.status(200).send({message:req.params.id+"방이 정상적으로 삭제됨"});
+        }
+    });
 };
 
 exports.roomFindById = (req, res) => {

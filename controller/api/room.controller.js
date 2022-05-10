@@ -21,10 +21,9 @@ router.post("/getin/:id",room.getInRoom);
 
 //Update a room with id (현재 기능상으로는 쓰이지 않을듯, 방에 이름등을 추가하면 사용할 메소드)
 router.patch("/:id",room.roomUpdate);
-
-//Delete a room with id
-router.delete("/delete",room.roomDelete);
 */
+router.delete("/delete/:id",room.roomDelete);
+
 module.exports = router;
 
 /**
