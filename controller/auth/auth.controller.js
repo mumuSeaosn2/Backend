@@ -35,9 +35,8 @@ router.get("/login/google/callback", passport.authenticate("google"), (req, res)
 
 //logout
 router.post('/logout', (req, res) => {
-    req.logout();
     req.session.destroy();
-    res.send(200)
+    res.status(200).send({message:"good"})
 });
 
 router.post('/register', auth.register );
