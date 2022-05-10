@@ -10,7 +10,7 @@ const Friend = function(friend) {
     this.friendId = friend.friendId;
   };
 
-Friend.create = async (newfriend, results) => {
+Friend.follow = async (newfriend, results) => {
   const user = await User.findOne({ where: { id: newfriend.userId } });
   const friend = await User.findOne({ where: { id: newfriend.friendId } });
   if(friend){
@@ -90,7 +90,7 @@ Friend.allFollower = async(Userid,results) => {
     where:{
       followingId:Userid
     }
-  }).then(result => {results(null,result)}).catch(err=>results(err,null));
+  }).then(result => {console.log(result);results(null,result)}).catch(err=>results(err,null));
 };
 
 Friend.followerNotfollowing = async(Userid,results) => {
@@ -118,11 +118,21 @@ Friend.followerNotfollowing = async(Userid,results) => {
               db.sequelize.models.Follow.findOne({
               where:{followingId:element.followerId,followerId:Userid}
             }).then(follow => {
-              if(follow == null)
+              if(follow) i++;
+              else{
                 list.push(element.followerId)
                 i++;
-                if(i==jsonObj.length)
+              }
+                
+              if(i==jsonObj.length){
+                console.log(list)
+                if(list.length==0){
+                  results(null,list)
+                  return ;
+                }
+                else
                   call(null,list);
+              }
             })
           })
         },
@@ -146,5 +156,23 @@ Friend.followerNotfollowing = async(Userid,results) => {
       })
     }).catch(err=>results(err,null));
 };
+
+Friend.unfollow = async (friendNeedToUnFollow, results) => {
+  const friend = await db.sequelize.models.Follow.findOne({ where: { followingId: friendNeedToUnFollow.friendId ,followerId:friendNeedToUnFollow.userId} });
+  if(friend){
+    await db.sequelize.models.Follow.destroy({
+      where: { followingId: friendNeedToUnFollow.friendId ,followerId: friendNeedToUnFollow.userId}
+    }).then(result => {
+      console.log('delete friend'+friendNeedToUnFollow.userId+','+friendNeedToUnFollow.friendId)
+      results(null,result)
+    }).catch(err => {
+      console.log(err);
+      results(err,null);
+    })
+  }else{
+    res.status(404).send('there is no followership with id:'+friendNeedToUnFollow.friendId+','+friendNeedToUnFollow.userId);
+  }
+
+};  
 
 module.exports = Friend;
