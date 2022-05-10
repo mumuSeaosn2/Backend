@@ -40,6 +40,7 @@ exports.roomDelete = (req,res) => {
             }
           }
         else{
+          req.app.get('io').of('/room').emit('newRoom', data);
           res.status(200).send({message:req.params.id+"방이 정상적으로 삭제됨"});
         }
     });
