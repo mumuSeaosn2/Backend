@@ -3,14 +3,14 @@ const room = require("../../service/room.service.js");
 const router = express.Router();
 
 //Create a new room
-router.post("/create/:id",room.roomCreate);
+router.post("/create",room.roomCreate);
 
 //Retrive all roomList
-router.get("/list",room.roomFindAll);
+//router.get("/list",room.roomFindAll);
 
 
 //Retrive roomList by user email
-router.get("/list/:id",room.roomFindById);
+router.get("/list",room.roomFindById);
 
 //Retrive roomList by user email
 router.post("/getin/:id",room.getInRoom);
@@ -23,7 +23,7 @@ router.post("/getin/:id",room.getInRoom);
 router.patch("/:id",room.roomUpdate);
 
 //Delete a room with id
-router.delete("/:id",room.roomDelete);
+router.delete("/delete",room.roomDelete);
 */
 module.exports = router;
 
