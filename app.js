@@ -25,7 +25,7 @@ const  corsOptions = {
 app.use(cors(corsOptions));*/
 app.use( cors({ 
   origin: [  
-    "http://localhost:8080" ], 
+    "http://localhost:8080","http://localhost:8081" ], 
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
      preflightContinue: false, 
      optionsSuccessStatus: 204, 
