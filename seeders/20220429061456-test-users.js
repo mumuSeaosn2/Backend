@@ -1,6 +1,6 @@
 'use strict';
 const bcrypt = require('bcryptjs');
-
+const uuidv4 = require('uuid4');
 //const { now } = require("sequelize/types/utils");
 
 
@@ -16,17 +16,17 @@ module.exports = {
      * }], {});
     */
       return  await queryInterface.bulkInsert('user',[{
-        id: 1, email: 'example1@mail.com', user_name: '홍길동',password:bcrypt.hashSync('1234', 12),
+        id: uuidv4(), email: 'example1@mail.com', user_name: '홍길동',password:bcrypt.hashSync('1234', 12),
         createdAt: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
         updatedAt: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
       },
       {
-        id: 2, email: 'example2@mail.com', user_name: '김철수',password:bcrypt.hashSync('4567', 12),
+        id: uuidv4(), email: 'example2@mail.com', user_name: '김철수',password:bcrypt.hashSync('4567', 12),
         createdAt: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
         updatedAt: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
       },
       {
-        id: 3, email: 'example3@mail.com', user_name: '김영희',password:bcrypt.hashSync('0123', 12),
+        id: uuidv4(), email: 'example3@mail.com', user_name: '김영희',password:bcrypt.hashSync('0123', 12),
         createdAt: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
         updatedAt: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
       }

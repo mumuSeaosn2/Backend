@@ -125,7 +125,6 @@ Friend.followerNotfollowing = async(Userid,results) => {
               }
                 
               if(i==jsonObj.length){
-                console.log(list)
                 if(list.length==0){
                   results(null,list)
                   return ;
