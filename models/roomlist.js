@@ -13,6 +13,8 @@ module.exports = class RoomList extends Sequelize.Model {
         timestamps:true,
         tableName: 'RoomList',
         paranoid : true, // 삭제일 (복구용)
+        charset: 'utf8',
+        collate: 'utf8_general_ci',
     })
   }
 
