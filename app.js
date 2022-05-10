@@ -95,6 +95,8 @@ app.get("/test",(req,res) => {
 });
 //const chatRouter = require('./routes/api/chat');
 
+app.use('/auth',authroutes);
+
 const authenticateUser = (req, res, next) => {
   if (req.isAuthenticated()) {
     next();
@@ -103,8 +105,8 @@ const authenticateUser = (req, res, next) => {
   }
 };
 
-app.use('/api',authenticateUser,apiroutes);
-app.use('/',authroutes);
+app.use('/',authenticateUser,apiroutes);
+
 //app.use('chat',chatRouter);
 
 app.use('/docs',docs);

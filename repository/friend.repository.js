@@ -169,7 +169,7 @@ Friend.unfollow = async (friendNeedToUnFollow, results) => {
       results(err,null);
     })
   }else{
-    res.status(404).send('there is no followership with id:'+friendNeedToUnFollow.friendId+','+friendNeedToUnFollow.userId);
+    results(null,null);
   }
 
 };  

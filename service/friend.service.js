@@ -102,6 +102,9 @@ Friend.unfollow(friend,(err,data) => {
           message:
               err.message || "Some error occurred"
       });
-      else res.send(data);
+  else{
+    if(data) res.status(200).send({message:"unfollow done"});
+    else res.send("there is no followership")
+  }
   });
 }
