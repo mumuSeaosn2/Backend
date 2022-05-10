@@ -35,12 +35,42 @@ Friend.friendFind = async(Userid,results) => {
     where:{
       followerId:Userid
     }
-  }).then(result => {
-      results(null,result);
-  }).catch(err =>{
-      results(err,null);
-      console.log(err);
-  })
+  }).then(result => 
+    {
+      const jsonObj = [];
+      const finalJsonData = [];
+      const task=[
+        call => {
+          if(result.length==0){results(null,result);}
+          else{
+            for(let i=0;i<result.length;i++)
+              jsonObj.push(result[i].dataValues)
+            call(null,jsonObj);
+            console.log(jsonObj);
+          }
+        },
+        (jsonObj,call) => {
+          let i=0;
+          const list=[];
+          jsonObj.forEach( element => {
+            model.User.findOne({
+              attributes: ['id','user_name'],
+              where:{id:element.followingId}
+            }).then(follow => {
+              if(follow)
+                list.push(follow.dataValues)
+                i++;
+                if(i==jsonObj.length){
+                  results(null,list);
+                }
+            })
+          })
+        },
+      ];
+      async.waterfall(task,(err)=>{
+        if(err) console.log(err)
+      })
+    }).catch(err=>results(err,null));
 
 };
 Friend.friendRecommend = async(Userid,results) => {
@@ -60,7 +90,7 @@ Friend.allFollower = async(Userid,results) => {
     where:{
       followingId:Userid
     }
-  }).then(result => {console.log(result);results(null,result)}).catch(err=>results(err,null));
+  }).then(result => {results(null,result)}).catch(err=>results(err,null));
 };
 
 Friend.followerNotfollowing = async(Userid,results) => {
