@@ -9,8 +9,7 @@ const apiroutes = require("./controller/api/");
 const authroutes = require("./controller/auth/");
 const docs = require("./controller/api/docs.controller");
 const { sequelize } = require("./models");
-const passportLocalConfig = require('./passport/localStrategy');
-const passportGoogleConfig = require('./passport/googleStrategy');
+const passportConfig = require('./passport/passportConfig')
 const cookieParser = require('cookie-parser');
 const mySqlStore = require('express-mysql-session')(session);
 
@@ -43,7 +42,7 @@ const sessionStore = new mySqlStore(mySqlOption);
 
 app.use(session({
   resave:false,
-  saveUninitialized:true,
+  saveUninitialized:false,
   secret:process.env.COOKIE_SECRET,
   cookie:{
     httpOnly:true,
@@ -65,8 +64,7 @@ sequelize.sync({ force: false })
 //passport init
 app.use(passport.initialize());
 app.use(passport.session());
-passportLocalConfig();
-passportGoogleConfig();
+passportConfig();
 
 //app = require("./config.js")
 
@@ -83,6 +81,8 @@ app.get("/test",(req,res) => {
 });
 //const chatRouter = require('./routes/api/chat');
 
+app.use('/auth',authroutes);
+
 const authenticateUser = (req, res, next) => {
   if (req.isAuthenticated()) {
     next();
@@ -91,8 +91,8 @@ const authenticateUser = (req, res, next) => {
   }
 };
 
-app.use('/api',authenticateUser,apiroutes);
-app.use('/',authroutes);
+app.use('/',authenticateUser,apiroutes);
+
 //app.use('chat',chatRouter);
 
 app.use('/docs',docs);

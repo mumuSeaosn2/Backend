@@ -7,13 +7,6 @@ module.exports = () => {
     passport.serializeUser((user, done) => {
         done(null, user.id);
     });
-    
-    passport.deserializeUser((user, done) => {
-        console.log("google deserialize find");
-        User.findOne({where: {email: email},
-            attributes: ['id','email','user_name','provider'],
-        }).then(result => {done(null,result)}).catch(err => {console.log(err);});
-    });
 
     passport.use( new googleStrategy(
         {

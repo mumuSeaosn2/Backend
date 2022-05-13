@@ -52,9 +52,24 @@ User.findIdByEmail = (email) => {
     raw : true,
     where : { email : email },
     attributes : ['id']
-  }).then(result =>{
+  }).then(result => {
     return result;
-  })
+  }).catch(err => {
+    console.log(err);
+  });
+};
+
+User.findByEmail = (email, userFound) => {
+  model.User.findOne({
+    raw : true,
+    where : { email : email },
+    attributes : ['id','email','password','user_name','provider']
+  }).then(result => {
+    console.log("user",result);
+    userFound(result);
+  }).catch(err => {
+    console.log(err);
+  });
 };
 
 // User.findByEmail = (email, results) => {

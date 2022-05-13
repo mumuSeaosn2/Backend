@@ -13,6 +13,8 @@ router.post('/login', passport.authenticate('local'),(req, res) => {
     res.send(req.user.user_name);
 });
 
+router.post('/token', auth.tokenCreate);
+
 router.get('/test',(req, res) => {
     if(req.isAuthenticated()) {
         res.send(req.user);
