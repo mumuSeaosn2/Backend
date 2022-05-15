@@ -48,7 +48,7 @@ exports.register = (req, res) => {
   }
 }
 
-exports.tokenCreate = async (req, res, next) => {
+exports.tokenCreate = async (req, res) => {
   console.log('tokencreate start')
   if(!req.body){
     res.status(400).send({
@@ -65,21 +65,40 @@ exports.tokenCreate = async (req, res, next) => {
 
         if(comp) {
           //토큰 발급
-          const accessToken = jwt.sign({id: userFound.id}, process.env.ACCESS_SECRET, {expiresIn: "30m"});
-          const refreshToken = jwt.sign({}, process.env.REFRESH_SECRET, {expiresIn: "1d"})
-          Token.create({
-            id: userFound.id,
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-          });
+          await Token.findById(userFound.id, async (err, data) => {
+            const accessToken = await jwt.sign({id: userFound.id}, process.env.ACCESS_SECRET, {expiresIn: "30m"});
+            let refreshToken;
+            if(err) {
+              res.status(500).send({
+                message:"findbyid error occur"
+              });
+            } else {
+              if(data) {
+                refreshToken = data.refreshToken;
+              } else {
+                refreshToken = jwt.sign({}, process.env.REFRESH_SECRET, {expiresIn: "1d"});
+              }
+            }
 
-          console.log(accessToken);
-          res.cookie("x_auth", token, {
-            maxAge: 1000 * 60 * 30,//30분
-            httpOnly: true,
+            console.log(refreshToken)
+            Token.create({
+              id: userFound.id,
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+            },(err, data) => {
+              if(err) {
+                res.status(500).send({
+                  message:"token create error occur"
+                });
+              } else {
+                res.cookie("x_auth", data.accessToken, {
+                  maxAge: 1000 * 60 * 30,//30분
+                  httpOnly: true,
+                });
+                res.send(userFound.user_name);
+              }
+            });
           });
-          res.send(userFound.user_name);
-
         } else {
             res.status(401).send({
               message: "비밀번호가 일치하지 않습니다."
@@ -87,20 +106,17 @@ exports.tokenCreate = async (req, res, next) => {
         }
       } else {
         res.status(402).send({
-          message: "해당 계정이 없습니다."
+          message: "없는 계정입니다."
         });
       }
-
     });
   } catch(error) {
     res.status(500).send({
       message: "error"
     });
   }
-
-  console.log('end')
 };
 
 exports.tokenVerify = (req, res ,next) => {
-  
+
 }

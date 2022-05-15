@@ -1,20 +1,19 @@
 const Sequelize = require('sequelize');
 
-module.exports = class User extends Sequelize.Model {
+module.exports = class Token extends Sequelize.Model {
   static init(sequelize) {
     return super.init({
         id : {
             type: Sequelize.INTEGER,
-            autoIncrement: true,
             primaryKey: true,
         },
         refreshToken:{
-            type: Sequelize.STRING(60),
+            type: Sequelize.STRING(255),
             allowNull: false,
             primaryKey: true,
         },
         accessToken:{
-            type: Sequelize.STRING(60),
+            type: Sequelize.STRING(255),
             allowNull: false,
             primaryKey: true,
         },

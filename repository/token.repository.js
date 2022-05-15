@@ -11,7 +11,7 @@ Token.create = (newToken, results) => {
       id : newToken.id,
       accessToken: newToken.accessToken,
       refreshToken: newToken.refreshToken,
-    }).then(result => {
+    }).then(() => {
         console.log("insert token");
         results(null, newToken)
         return;
@@ -21,9 +21,21 @@ Token.create = (newToken, results) => {
         console.log(err);
         return;
       });
-}
+};
 
 Token.findById = (id, results) => {
-  model.Token.findAll
+  model.Token.findOne({
+    raw: true,
+    where: {id: id},
+    attribute:['id','refreshToken','accessToken'],
+  })
+  .then(result => {
+    return results(null, result);
+  })
+  .catch(err => {
+    console.log(err);
+    return results(err, null);
+  })
+};
 
-}
+module.exports = Token;

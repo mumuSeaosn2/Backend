@@ -65,7 +65,6 @@ User.findByEmail = (email, userFound) => {
     where : { email : email },
     attributes : ['id','email','password','user_name','provider']
   }).then(result => {
-    console.log("user",result);
     userFound(result);
   }).catch(err => {
     console.log(err);
