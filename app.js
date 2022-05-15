@@ -16,8 +16,20 @@ const mySqlStore = require('express-mysql-session')(session);
 const app = express();
 
 //enable cors
-app.use(cors());
-app.options('*',cors());
+/*
+const  corsOptions = {
+  origin:"http://localhost:8080/",
+  credential: true,
+};
+app.use(cors(corsOptions));*/
+app.use( cors({ 
+  origin: [  
+    "http://localhost:8080","http://localhost:8081" ], 
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+     preflightContinue: false, 
+     optionsSuccessStatus: 204, 
+     credentials: true, }) );
+
 
 //parse json request body
 app.use(express.json())
@@ -81,17 +93,9 @@ app.get("/test",(req,res) => {
 });
 //const chatRouter = require('./routes/api/chat');
 
-app.use('/auth',authroutes);
+app.use('/',authroutes);
 
-const authenticateUser = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.status(401).send({message: "Auth is required"});
-  }
-};
-
-app.use('/',authenticateUser,apiroutes);
+app.use('/',apiroutes);
 
 //app.use('chat',chatRouter);
 

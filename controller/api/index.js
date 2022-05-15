@@ -37,13 +37,20 @@ const devRoutes = [
   },
 ];
 
+const authenticateUser = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.status(401).send({message: "Auth is required"});
+  }
+};
 
 devRoutes.forEach((route) => {
-  router.use(route.path, route.route);
+  router.use(route.path, authenticateUser,route.route);
 });
 
 defaultRoutes.forEach((route) => {
-  router.use(route.path, route.route);
+  router.use(route.path,authenticateUser, route.route);
 });
 
 module.exports = router;

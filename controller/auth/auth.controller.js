@@ -10,6 +10,8 @@ router.post('/login', passport.authenticate('local'),(req, res) => {
             message:"request could not be empty",
         })
     }
+    //console.log(req.sessionID)
+    console.log(res)
     res.send(req.user.user_name);
 });
 
@@ -35,9 +37,8 @@ router.get("/login/google/callback", passport.authenticate("google"), (req, res)
 
 //logout
 router.post('/logout', (req, res) => {
-    req.logout();
     req.session.destroy();
-    res.send(200)
+    res.status(200).send({message:"good"})
 });
 
 router.post('/register', auth.register );

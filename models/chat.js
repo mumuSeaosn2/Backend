@@ -4,8 +4,8 @@ module.exports = class Chat extends Sequelize.Model {
     static init(sequelize) {
       return super.init({
         id : {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
+            type: Sequelize.UUID,
+            defaultValue: Sequelize.UUIDV4,
             primaryKey: true,
         },
         user_name:{
@@ -22,6 +22,8 @@ module.exports = class Chat extends Sequelize.Model {
         timestamps:true,
         tableName: 'chat',
         paranoid : true, // 삭제일 (복구용)
+        charset: 'utf8',
+        collate: 'utf8_general_ci',
       });
     }
   
