@@ -15,17 +15,17 @@ Friend.follow = async (newfriend, results) => {
   const friend = await User.findOne({ where: { id: newfriend.friendId } });
   if(friend){
     if (user) {
-      await user.addFollowing(friendId).
-      then(result => {
+      await user.addFollowing(newfriend.friendId)
+      .then(result => {
         console.log('add friend'+newfriend.userId+','+newfriend.friendId)
-        results(null,result)
+        results(null,result);
       }).catch(err => {
         console.log(err);
         results(err,null);
       })
     }
   }else{
-    res.status(404).send('there is no user wit id:'+newfriend.friendId);
+    results(404,null);
   }
 };  
 

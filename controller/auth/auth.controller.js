@@ -15,18 +15,14 @@ router.post('/login', passport.authenticate('local'),(req, res) => {
     res.send(req.user.user_name);
 });
 
-router.post('/token', auth.tokenCreate);
+router.post('/token', auth.tokenIssuance);
 
-router.get('/test',(req, res) => {
-    if(req.isAuthenticated()) {
-        res.send(req.user);
-    }
-});
+router.use('/test',auth.tokenAuthenticate);
 
 
 
 //login-google
-router.get('/login/google', passport.authenticate('google',{ scope: ["email", "profile"] }));
+router.get('/login/google', passport.authenticate('google',{ scope: ["email", "profile"], session: false }));
 
 router.get("/login/google/callback", passport.authenticate("google"), (req, res) => {
     console.log(req.user);

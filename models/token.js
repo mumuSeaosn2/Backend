@@ -4,7 +4,8 @@ module.exports = class Token extends Sequelize.Model {
   static init(sequelize) {
     return super.init({
         id : {
-            type: Sequelize.INTEGER,
+            type: Sequelize.UUID,
+            defaultValue: Sequelize.UUIDV4,
             primaryKey: true,
         },
         refreshToken:{

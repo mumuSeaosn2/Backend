@@ -28,14 +28,13 @@ User.create = (newUser, results) => {
     });
 };
 
-User.findById = (email, results) => {
+User.findById = (id, results) => {
   model.User.findOne({
     raw : true,
-    where : { id : email },
-    //attributes : ['id','email','user_name']
+    where : { id : id },
+    attributes : ['id','email','user_name','provider']
   })
-  .then(result => 
-      {console.log("find user: ",result);
+  .then(result => {
       results(null,result)
       //return;
     })
@@ -59,15 +58,16 @@ User.findIdByEmail = (email) => {
   });
 };
 
-User.findByEmail = (email, userFound) => {
+User.findByEmail = (email, results) => {
   model.User.findOne({
     raw : true,
     where : { email : email },
     attributes : ['id','email','password','user_name','provider']
   }).then(result => {
-    userFound(result);
+    return results(null,result);
   }).catch(err => {
     console.log(err);
+    return results(err,null);
   });
 };
 

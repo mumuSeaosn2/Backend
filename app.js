@@ -12,6 +12,7 @@ const { sequelize } = require("./models");
 const passportConfig = require('./passport/passportConfig')
 const cookieParser = require('cookie-parser');
 const mySqlStore = require('express-mysql-session')(session);
+const auth = require('./service/auth.service');
 
 const app = express();
 
@@ -81,6 +82,8 @@ passportConfig();
 //app = require("./config.js")
 
 
+
+
 app.get("/",(req,res) => {
     //res.json({message:"hello"});
     res.sendFile(__dirname + '/login_test.html');
@@ -93,9 +96,11 @@ app.get("/test",(req,res) => {
 });
 //const chatRouter = require('./routes/api/chat');
 
-app.use('/',authroutes);
+app.use('/auth',authroutes);
 
 app.use('/',apiroutes);
+
+
 
 //app.use('chat',chatRouter);
 

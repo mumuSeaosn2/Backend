@@ -36,7 +36,6 @@ module.exports = () => {
                         user_name: profile.displayName,
                         sns_id: profile.id,
                         provider: 'google',
-                        //password: ?? 조정필요
                     });
                     done(null, newUser);
                 }
