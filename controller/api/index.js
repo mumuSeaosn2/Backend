@@ -39,23 +39,6 @@ const devRoutes = [
   },
 ];
 
-const authenticateUser = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.status(401).send({message: "Auth is required"});
-  }
-};
-
-// router.use("/", passport.authenticate('jwt', {session: false}), (err, user) => {
-//   if(err) {
-//     return res.status(401).send({messgae: "Auth is required"});
-//   } else {
-//     return req.user = user;
-//   }
-// });
-
-
 devRoutes.forEach((route) => {
   router.use(route.path, route.route);
 });

@@ -5,5 +5,5 @@ const jwtStrategy = require('./jwtStrategy');
 module.exports = () => {
     //localStrategy();
     googleStrategy();
-    jwtStrategy();
+    //jwtStrategy();
 }

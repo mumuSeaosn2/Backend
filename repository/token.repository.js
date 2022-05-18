@@ -1,4 +1,3 @@
-const { token } = require("morgan");
 const model = require("../models");
 
 const Token = function(token) {
@@ -18,8 +17,8 @@ Token.create = (newToken, results) => {
         return;
       })
       .catch(err => {
-        results(err,null);
         console.log(err);
+        results(err,null);
         return;
       });
 };
@@ -54,9 +53,9 @@ Token.findAllById = (id, results) => {
   })
 };
 
-Token.remove = async (id, refreshToken, accessToken, results) => {
+Token.remove = async (id, accessToken, results) => {
   await model.Token.destroy({
-    where: {id: id, refreshToken: refreshToken, accessToken: accessToken}
+    where: {id: id, accessToken: accessToken}
   })
   .then(result => {
     console.log("delete token");

@@ -4,38 +4,23 @@ const passport = require('passport');
 const router = express.Router();
 
 //login
-router.post('/login', passport.authenticate('local'),(req, res) => {
-    if(!req.body){
-        res.status(400).send({
-            message:"request could not be empty",
-        })
-    }
-    //console.log(req.sessionID)
-    console.log(res)
-    res.send(req.user.user_name);
-});
+router.post('/login', auth.tokenIssuance);
+
+//login-google
+router.get('/login/google', passport.authenticate('google',{ scope: ["email", "profile"], session: false }));
+
+router.get("/login/google/callback", passport.authenticate("google",{session: false}), auth.tokenIssuance);
+
+//logout
+router.post('/logout', auth.logout);
+
+//test routes
 
 router.post('/token', auth.tokenIssuance);
 
 router.use('/test',auth.tokenAuthenticate);
 
 
-
-//login-google
-router.get('/login/google', passport.authenticate('google',{ scope: ["email", "profile"], session: false }));
-
-router.get("/login/google/callback", passport.authenticate("google"), (req, res) => {
-    console.log(req.user);
-    res.send(req.user);
-    //console.log(res);
-});
-
-
-//logout
-router.post('/logout', (req, res) => {
-    req.session.destroy();
-    res.status(200).send({message:"good"})
-});
 
 router.post('/register', auth.register );
 
