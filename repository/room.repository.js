@@ -1,11 +1,12 @@
 const model = require("../models");
+const db = require("../models");
 
 const Room = function(room) {
     this.user_name = room.user_name;
     this.email = room.email;
 };
 
-Room.create = async(Userid,results) => {
+Room.create = async(Userid,fid,results) => {
     await model.RoomList.create({
         raw: true
     }).then(async result =>
@@ -13,6 +14,7 @@ Room.create = async(Userid,results) => {
             const room = await model.RoomList.findOne({where: {id: result.id}})
             console.log("create new room: ",result)
             await room.addUser(Userid);
+            await room.addUser(fid);
             results(null,result);
             return;
     })
@@ -94,18 +96,31 @@ Room.JoinById = async(Userid,results) => {
 };
 
 Room.getInRoom = async(RoomId,UserId,results) => {
-    const room = await model.RoomList.findOne({where: {id: RoomId}})
-    if (room) {
-        results(err,null);
-        console.log(err);
-    }
-    await room.addUser(UserId)
-    .then(results =>{
-        results(null,result);
-    }).catch(err =>{
+    await model.RoomList.findOne({where: {id: RoomId}
+    }).then(result=>{
+        console.log(result)
+    }).catch(err=>{
         results(err,null);
         console.log(err);
     })
+
+    await db.sequelize.models.RoomUser.findAll({
+        attributes:['UserId'],
+        where: {RoomListid: RoomId}
+    }).then(result=>{
+        console.log(result)
+        results(null,result)
+    }).catch(err=>{
+        results(err,null);
+        console.log(err)
+    })
+    // await room.addUser(UserId)
+    // .then(results =>{
+    //     results(null,{friend,user,room});
+    // }).catch(err =>{
+    //     results(err,null);
+    //     console.log(err);
+    // })
 
 };
 

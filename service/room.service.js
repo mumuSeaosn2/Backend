@@ -1,7 +1,8 @@
 const Room = require("../repository/room.repository.js");
 
 exports.roomCreate = (req, res) => {
-    Room.create(req.user.id,(err,data) => {
+    console.log("give me the fucking name"+req.body.id)
+    Room.create(req.user.id,req.body.id,(err,data) => {
         if (err)
             res.status(500).send({
                 message:
