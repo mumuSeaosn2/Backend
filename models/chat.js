@@ -11,7 +11,6 @@ module.exports = class Chat extends Sequelize.Model {
         user_name:{
             type: Sequelize.STRING(50),
             allowNull: false,
-            unique: true,
         },
         message :{ 
             type: Sequelize.STRING(255),
