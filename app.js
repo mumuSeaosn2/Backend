@@ -25,7 +25,7 @@ const  corsOptions = {
 app.use(cors(corsOptions));*/
 app.use( cors({ 
   origin: [  
-    "http://localhost:8080" ], 
+    "http://localhost:8080","http://localhost:8081" ], 
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
      preflightContinue: false, 
      optionsSuccessStatus: 204, 
@@ -95,16 +95,10 @@ app.get("/test",(req,res) => {
 });
 //const chatRouter = require('./routes/api/chat');
 
-const authenticateUser = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.status(401).send({message: "Auth is required"});
-  }
-};
-
-app.use('/api',authenticateUser,apiroutes);
 app.use('/',authroutes);
+
+app.use('/',apiroutes);
+
 //app.use('chat',chatRouter);
 
 app.use('/docs',docs);

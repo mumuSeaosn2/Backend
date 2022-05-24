@@ -3,14 +3,14 @@ const room = require("../../service/room.service.js");
 const router = express.Router();
 
 //Create a new room
-router.post("/create/:id",room.roomCreate);
+router.post("/create",room.roomCreate);
 
 //Retrive all roomList
-router.get("/list",room.roomFindAll);
+//router.get("/list",room.roomFindAll);
 
 
 //Retrive roomList by user email
-router.get("/list/:id",room.roomFindById);
+router.get("/list",room.roomFindById);
 
 //Retrive roomList by user email
 router.post("/getin/:id",room.getInRoom);
@@ -21,10 +21,9 @@ router.post("/getin/:id",room.getInRoom);
 
 //Update a room with id (현재 기능상으로는 쓰이지 않을듯, 방에 이름등을 추가하면 사용할 메소드)
 router.patch("/:id",room.roomUpdate);
-
-//Delete a room with id
-router.delete("/:id",room.roomDelete);
 */
+router.delete("/delete/:id",room.roomDelete);
+
 module.exports = router;
 
 /**

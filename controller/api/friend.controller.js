@@ -3,7 +3,7 @@ const friend = require("../../service/friend.service.js");
 const router = express.Router();
 
 // Create friend relationship
-router.post("/add/:friendId", friend.friendAdd);
+router.post("/follow", friend.follow);
 
 // Retrieve all friends of user (user's following)
 router.get("/list", friend.friendFind);
@@ -18,7 +18,7 @@ router.get("/follower/list", friend.followerNotfollowing);
 router.get("/allfollower/list", friend.allFollower);
 
 //unfollow
-router.get("/unfollow", friend.friendRecommend);
+router.delete("/unfollow", friend.unfollow);
 
 // Retrieve a single Tutorial with id
 //router.get("/:email", user.userFindOne);
@@ -36,20 +36,26 @@ module.exports = router;
 
 /**
  * @swagger
- * /friend/add/{friendId}:
+ * /friend/follow:
  *   post:
- *     summary: Create friend relationship
+ *     summary: follow
  *     description: Only admins can create other users.
  *     tags: [friend]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: friendId
+ *     requestBody:
  *         required: true
- *         schema:
- *           type: string
- *         description: friend Id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required:
+ *                 - friendId
+ *               properties:
+ *                 friendId:
+ *                   type: string
+ *               example:
+ *                 friendId: 20c37r94-df80-4055-72628fc4njs338e
  *     responses:
  *       "200":
  *         description: Created
@@ -64,6 +70,44 @@ module.exports = router;
  *       "403":
  *         $ref: '#/components/responses/Forbidden'
  * 
+ * 
+ */
+
+/**
+ * @swagger
+ * /friend/unfollow:
+ *   delete:
+ *     summary: unfollow
+ *     description: 
+ *     tags: [friend]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required:
+ *                 - friendId
+ *               properties:
+ *                 friendId:
+ *                   type: string
+ *               example:
+ *                 friendId: 20c37r94-df80-4055-72628fc4njs338e
+ *     responses:
+ *       "200":
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Room'
+ *       "400":
+ *         $ref: '#/components/responses/DuplicateEmail'
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
  */
 
 /**
@@ -248,7 +292,7 @@ module.exports = router;
  * @swagger
  * /friend/list:
  *   get:
- *     summary: Get all users
+ *     summary: Get following list
  *     description: Only admins can retrieve all users.
  *     tags: [friend]
  *     security:
@@ -302,49 +346,3 @@ module.exports = router;
  *       "403":
  *         $ref: '#/components/responses/Forbidden'
  */
-
-
-/**
- * @swagger
- * /friend/unfollow:
- *   delete:
- *     summary: Get all users
- *     description: Only admins can retrieve all users.
- *     tags: [friend]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: friendId
- *         schema:
- *           type: intger
- *     responses:
- *       "200":
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 results:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/User'
- *                 page:
- *                   type: integer
- *                   example: 1
- *                 limit:
- *                   type: integer
- *                   example: 10
- *                 totalPages:
- *                   type: integer
- *                   example: 1
- *                 totalResults:
- *                   type: integer
- *                   example: 1
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- */
-

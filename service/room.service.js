@@ -1,7 +1,8 @@
 const Room = require("../repository/room.repository.js");
 
 exports.roomCreate = (req, res) => {
-    Room.create(req.params.id,(err,data) => {
+    console.log("give me the fucking name"+req.body.id)
+    Room.create(req.user.id,req.body.id,(err,data) => {
         if (err)
             res.status(500).send({
                 message:
@@ -15,7 +16,7 @@ exports.roomCreate = (req, res) => {
 };
 
 exports.roomFindAll = (req, res) => {
-    const id = req.query.id;
+    const id = req.user.id;
     Room.findAll(id , (err,data) => {
         if(err)
             res.status(500).send({
@@ -38,12 +39,16 @@ exports.roomDelete = (req,res) => {
                 message: "Could not delete Room with id " + req.params.id
               });
             }
-          } else res.send({ message: `Room was deleted successfully!` });
-        });
+          }
+        else{
+          req.app.get('io').of('/room').emit('newRoom', data);
+          res.status(200).send({message:req.params.id+"방이 정상적으로 삭제됨"});
+        }
+    });
 };
 
 exports.roomFindById = (req, res) => {
-    Room.JoinById(req.params.id, async(err,data)=>{
+    Room.JoinById(req.user.id, async(err,data)=>{
         if(err){
           res.status(500).send({message:"Error in server"})
         }

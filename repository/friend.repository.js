@@ -10,7 +10,7 @@ const Friend = function(friend) {
     this.friendId = friend.friendId;
   };
 
-Friend.create = async (newfriend, results) => {
+Friend.follow = async (newfriend, results) => {
   const user = await User.findOne({ where: { id: newfriend.userId } });
   const friend = await User.findOne({ where: { id: newfriend.friendId } });
   if(friend){
@@ -35,12 +35,42 @@ Friend.friendFind = async(Userid,results) => {
     where:{
       followerId:Userid
     }
-  }).then(result => {
-      results(null,result);
-  }).catch(err =>{
-      results(err,null);
-      console.log(err);
-  })
+  }).then(result => 
+    {
+      const jsonObj = [];
+      const finalJsonData = [];
+      const task=[
+        call => {
+          if(result.length==0){results(null,result);}
+          else{
+            for(let i=0;i<result.length;i++)
+              jsonObj.push(result[i].dataValues)
+            call(null,jsonObj);
+            console.log(jsonObj);
+          }
+        },
+        (jsonObj,call) => {
+          let i=0;
+          const list=[];
+          jsonObj.forEach( element => {
+            model.User.findOne({
+              attributes: ['id','user_name'],
+              where:{id:element.followingId}
+            }).then(follow => {
+              if(follow)
+                list.push(follow.dataValues)
+                i++;
+                if(i==jsonObj.length){
+                  results(null,list);
+                }
+            })
+          })
+        },
+      ];
+      async.waterfall(task,(err)=>{
+        if(err) console.log(err)
+      })
+    }).catch(err=>results(err,null));
 
 };
 Friend.friendRecommend = async(Userid,results) => {
@@ -88,11 +118,20 @@ Friend.followerNotfollowing = async(Userid,results) => {
               db.sequelize.models.Follow.findOne({
               where:{followingId:element.followerId,followerId:Userid}
             }).then(follow => {
-              if(follow == null)
+              if(follow) i++;
+              else{
                 list.push(element.followerId)
                 i++;
-                if(i==jsonObj.length)
+              }
+                
+              if(i==jsonObj.length){
+                if(list.length==0){
+                  results(null,list)
+                  return ;
+                }
+                else
                   call(null,list);
+              }
             })
           })
         },
@@ -116,5 +155,23 @@ Friend.followerNotfollowing = async(Userid,results) => {
       })
     }).catch(err=>results(err,null));
 };
+
+Friend.unfollow = async (friendNeedToUnFollow, results) => {
+  const friend = await db.sequelize.models.Follow.findOne({ where: { followingId: friendNeedToUnFollow.friendId ,followerId:friendNeedToUnFollow.userId} });
+  if(friend){
+    await db.sequelize.models.Follow.destroy({
+      where: { followingId: friendNeedToUnFollow.friendId ,followerId: friendNeedToUnFollow.userId}
+    }).then(result => {
+      console.log('delete friend'+friendNeedToUnFollow.userId+','+friendNeedToUnFollow.friendId)
+      results(null,result)
+    }).catch(err => {
+      console.log(err);
+      results(err,null);
+    })
+  }else{
+    results(null,null);
+  }
+
+};  
 
 module.exports = Friend;

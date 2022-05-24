@@ -4,14 +4,13 @@ module.exports = class Chat extends Sequelize.Model {
     static init(sequelize) {
       return super.init({
         id : {
-          type: Sequelize.UUID,
-          defaultValue: Sequelize.UUIDV4,
+            type: Sequelize.UUID,
+            defaultValue: Sequelize.UUIDV4,
             primaryKey: true,
         },
         user_name:{
             type: Sequelize.STRING(50),
             allowNull: false,
-            unique: true,
         },
         message :{ 
             type: Sequelize.STRING(255),
