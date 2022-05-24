@@ -10,9 +10,8 @@ exports.follow = async(req, res) => {
        message: "Content can not be empty!"
      });
    };
-  
-  userId=req.user.id
-  friendId=req.body.friendId;
+  let userId=req.user.id
+  let friendId=req.body.friendId;
 
   const friend = new Friend({
     userId : userId,

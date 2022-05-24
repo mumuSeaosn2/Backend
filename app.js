@@ -1,18 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const morgan = require('morgan');
 const passport = require('passport');
-const session = require('express-session');
 const cookieparser = require('cookie-parser');
 const apiroutes = require("./controller/api/");
 const authroutes = require("./controller/auth/");
 const docs = require("./controller/api/docs.controller");
 const { sequelize } = require("./models");
-const passportLocalConfig = require('./passport/localStrategy');
-const passportGoogleConfig = require('./passport/googleStrategy');
+const passportConfig = require('./passport/passportConfig')
 const cookieParser = require('cookie-parser');
-const mySqlStore = require('express-mysql-session')(session);
+const auth = require('./service/auth.service');
 
 const app = express();
 
@@ -50,21 +47,6 @@ const mySqlOption = {
   database: process.env.DB_DATABASE
 };
 
-const sessionStore = new mySqlStore(mySqlOption);
-
-
-app.use(session({
-  resave:false,
-  saveUninitialized:false,
-  secret:process.env.COOKIE_SECRET,
-  cookie:{
-    httpOnly:true,
-    secure:false,
-    maxAge: 60 * 60 * 1000,
-  },
-  store: sessionStore
-}));
-
 //DB sync
 sequelize.sync({ force: false })
   .then(() => {
@@ -74,20 +56,13 @@ sequelize.sync({ force: false })
     console.error(err);
 });
 
-//passport init
-app.use(passport.initialize());
-app.use(passport.session());
-passportLocalConfig();
-passportGoogleConfig();
-
-//app = require("./config.js")
-
+//passport setting
+passportConfig();
 
 app.get("/",(req,res) => {
     //res.json({message:"hello"});
     res.sendFile(__dirname + '/login_test.html');
 });
-
 
 app.get("/test",(req,res) => {
   //res.json({message:"hello"});
@@ -95,9 +70,11 @@ app.get("/test",(req,res) => {
 });
 //const chatRouter = require('./routes/api/chat');
 
-app.use('/',authroutes);
+app.use('/auth',authroutes);
 
 app.use('/',apiroutes);
+
+
 
 //app.use('chat',chatRouter);
 
