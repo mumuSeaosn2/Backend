@@ -22,7 +22,7 @@ module.exports = class Chat extends Sequelize.Model {
         tableName: 'chat',
         paranoid : true, // 삭제일 (복구용)
         charset: 'utf8',
-        collate: 'utf8_general_ci',
+        collate: 'utf8_general_ci', // 삭제일 (복구용)
       });
     }
   
