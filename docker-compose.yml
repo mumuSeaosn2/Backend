@@ -33,6 +33,20 @@ services:
     networks:
       - mumuseason2-api
 
+  redis:
+    container_name: mumuseason2-redis
+    image: redis:5.0.3
+    restart: always
+    hostname: ${REDIS_HOST}
+    network_mode: host
+    ports:
+        - "6379:6379"
+    command: redis-server --include /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+
+    
+
 networks:
   mumuseason2-api:
     driver: bridge

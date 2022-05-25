@@ -10,8 +10,13 @@ const { sequelize } = require("./models");
 const passportConfig = require('./passport/passportConfig')
 const cookieParser = require('cookie-parser');
 const auth = require('./service/auth.service');
+const redis=require('redis')
 
 const app = express();
+const client=redis.createClient({
+  host:process.env.REDIS_HOST,
+  port:process.env.REDIS_PORT
+});
 
 //enable cors
 /*
