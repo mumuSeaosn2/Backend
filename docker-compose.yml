@@ -15,6 +15,7 @@ services:
       - mumuseason2-api
     depends_on:
       - mumuseason2-database
+      - mumuseason2-redis
     #entrypoint: ./wait-for-it.sh mumuseason2-database:5432 
 
   mumuseason2-database:
@@ -33,17 +34,18 @@ services:
     networks:
       - mumuseason2-api
 
-  redis:
+  mumuseason2-redis:
     container_name: mumuseason2-redis
     image: redis:5.0.3
+    hostname: mumuseason2-redis
+    command: redis-server
     restart: always
-    hostname: ${REDIS_HOST}
-    network_mode: host
     ports:
-        - "6379:6379"
-    command: redis-server --include /usr/local/etc/redis/redis.conf
-    volumes:
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - "6379:6379"
+    networks:
+      - mumuseason2-api
+
+
 
     
 
