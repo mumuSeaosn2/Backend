@@ -10,7 +10,7 @@ require('dotenv').config();
 refreshTokenVerifyAndIssue = async (id, results) => {
   console.log("refreshTokenVerify start");
   let refreshToken;
-  Token.findAllById(id, (err, data) => {
+  Token.findAllRefreshById(id, (err, data) => {
     //findbyid로 refreshtoken 존재유무 확인
     if(err) {
       console.log("findbyid err in refreshTokenVerify");
@@ -21,7 +21,7 @@ refreshTokenVerifyAndIssue = async (id, results) => {
         //5기기를 넘으면 처음에 발급한 accessToken을 폐기
         if(data.length >= 5) {
           console.log('remove expired token');
-          Token.removeOne(id, (err, result) => {
+          Token.removeOneRefresh(id, (err, result) => {
             if(err) {              
               console.log("token removeOne err in refreshTokenVerify");
               return results(err,null);
@@ -146,6 +146,9 @@ exports.tokenIssuance = async (req, res) => {
                     maxAge: 1000 * 60 * 30,//30분
                     httpOnly: true,
                   });
+
+                  res.cookie("refreshToken",data.refreshToken,{httpOnly:true});
+
                   res.send(userFound.user_name);
                 }
               });
@@ -223,7 +226,7 @@ exports.tokenAuthenticate = (req, res ,next) => {
   } catch(err) {
     //accesstoken 만료시 refreshtoken 확인
     if(err === 'TokenExpiredError') {
-      Token.findById(id, (err, result) => {
+      Token.findAllRefreshById(id, (err, result) => {
         if(err) {
           res.status(500).send({
             message:"findbyid error"
@@ -260,8 +263,8 @@ exports.tokenAuthenticate = (req, res ,next) => {
 
           accessToken = jwt.sign({id: id}, process.env.ACCESS_SECRET, {expiresIn: "5m"});
 
-          Token.create({
-            id: id,
+          Token.createRefresh({
+            userId: id,
             accessToken: accessToken,
             refreshToken: refreshToken,
           },(err, data) => {
@@ -270,10 +273,11 @@ exports.tokenAuthenticate = (req, res ,next) => {
                 message:"token create error"
               });
             } else {
-              res.cookie("x_auth", data.accessToken, {
+              res.cookie("accessToken", data.accessToken, {
                 maxAge: 1000 * 60 * 5,//5분
                 httpOnly: true,
-              }).redirect(req.path);
+              })
+              res.cookie("refreshToken",data.refreshToken,{httpOnly:true});
             }
           });
 
