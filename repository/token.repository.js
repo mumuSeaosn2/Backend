@@ -1,6 +1,7 @@
 const model = require("../models");
 const { promisify } = require('util');
-const redisClient = require("../redis.js")
+const redisClient = require("../redis.js");
+const client = require("../redis.js");
 
 const Token = function(token) {
   this.id = token.id;
@@ -8,8 +9,11 @@ const Token = function(token) {
 };
 
 const asyncRedisGet = promisify(redisClient.get).bind(redisClient);
+const asyncRedisDel = promisify(redisClient.del).bind(redisClient);
 const asyncRedisLpop = promisify(redisClient.lPop).bind(redisClient);
 const asyncRedisRpush = promisify(redisClient.rPush).bind(redisClient);
+
+
 
 Token.create = (newToken, results) => {
     model.Token.create({
@@ -111,7 +115,8 @@ Token.removeAll = (id, results) => {
 }
 
 Token.findAllRefreshById = (id, results) => {
-  asyncRedisGet(id).then(result => {
+  redisClient.lRange(id,0,-1).then(result => {
+    console.log(result)
     return results(null, result);
   })
   .catch(err => {
@@ -121,7 +126,7 @@ Token.findAllRefreshById = (id, results) => {
 };
 
 Token.removeOneRefresh = (id, results) => {
-  asyncRedisLpop(id).then(result => {
+    redisClient.lPop(id).then(result => {
       console.log("delete oldest token");
       return results(null,result);
     })
@@ -132,7 +137,7 @@ Token.removeOneRefresh = (id, results) => {
 }
 
 Token.createRefresh = (refreshToken, results) => {
-  asyncRedisRpush(refreshToken.userId,refreshToken.refreshToken).then(() => {
+    redisClient.rPush(refreshToken.userId,refreshToken.refreshToken).then(() => {
       console.log("insert token into redis");
       results(null, refreshToken)
       return;
@@ -143,5 +148,17 @@ Token.createRefresh = (refreshToken, results) => {
       return;
     });
 };
+
+Token.removeRefresh = (id, results) => {
+  redisClient.del(id)
+  .then(result => {
+    console.log("delete all tokens");
+    return results(null,"done");
+  })
+  .catch(err => {
+    console.log(err);
+    return results(err, null);
+  })
+}
 
 module.exports = Token;

@@ -13,11 +13,6 @@ const auth = require('./service/auth.service');
 const redis=require('redis')
 const app = express();
 
-const client=redis.createClient({url: 'redis://mumuseason2-redis:6379'});
-client.connect();
-client.set(1,2);
-client.get(1);
-
 
 //enable cors
 /*
