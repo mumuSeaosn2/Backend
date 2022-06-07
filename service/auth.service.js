@@ -134,7 +134,6 @@ exports.tokenIssuance = async (req, res) => {
               accessToken = jwt.sign({id: userFound.id}, process.env.ACCESS_SECRET, {expiresIn: "30m"});
               Token.createRefresh({
                 userId: userFound.id,
-                accessToken: accessToken,
                 refreshToken: refreshToken,
               },(err, data) => {
                 if(err) {
@@ -142,12 +141,15 @@ exports.tokenIssuance = async (req, res) => {
                     message:"token create error"
                   });
                 } else {
-                  res.cookie("accessToken", data.accessToken, {
+                  res.cookie("accessToken", accessToken, {
                     maxAge: 1000 * 60 * 30,//30분
                     httpOnly: true,
                   });
 
-                  res.cookie("refreshToken",data.refreshToken,{httpOnly:true});
+                  res.cookie("refreshToken",data.refreshToken,{
+                    maxAge: 1000 * 60 * 600,
+                    httpOnly:true
+                  });
 
                   res.send(userFound.user_name);
                 }
@@ -173,7 +175,6 @@ exports.tokenIssuance = async (req, res) => {
           accessToken = jwt.sign({id: userFound.id}, process.env.ACCESS_SECRET, {expiresIn: "30m"});
           Token.createRefresh({
             userId: userFound.id,
-            accessToken: accessToken,
             refreshToken: refreshToken,
           },(err, data) => {
             if(err) {
@@ -181,12 +182,15 @@ exports.tokenIssuance = async (req, res) => {
                 message:"token create error"
               });
             } else {
-              res.cookie("accessToken", data.accessToken, {
+              res.cookie("accessToken", accessToken, {
                 maxAge: 1000 * 60 * 30,//30분
                 httpOnly: true,
               });
+              res.cookie("refreshToken",data.refreshToken,{
+                maxAge: 1000 * 60 * 600,
+                httpOnly:true
+              });
               res.send(userFound.user_name);
-              res.cookie("refreshToken",data.refreshToken,{httpOnly:true});
             }
           });
         });
@@ -267,7 +271,6 @@ exports.tokenAuthenticate = (req, res ,next) => {
 
           Token.createRefresh({
             userId: id,
-            accessToken: accessToken,
             refreshToken: refreshToken,
           },(err, data) => {
             if(err) {
@@ -275,11 +278,14 @@ exports.tokenAuthenticate = (req, res ,next) => {
                 message:"token create error"
               });
             } else {
-              res.cookie("accessToken", data.accessToken, {
+              res.cookie("accessToken", accessToken, {
                 maxAge: 1000 * 60 * 5,//5분
                 httpOnly: true,
               })
-              res.cookie("refreshToken",data.refreshToken,{httpOnly:true});
+              res.cookie("refreshToken",data.refreshToken,{
+                maxAge: 1000 * 60 * 600,
+                httpOnly:true
+              });
             }
           });
 
@@ -313,7 +319,9 @@ exports.logout = (req, res, next) => {
           message: "토큰 삭제 오류"
         });
       } else {
-        res.clearCookie('accessToken','refreshToken').send("log out");
+
+        res.clearCookie('refreshToken');
+        res.clearCookie('accessToken').send("log out");
         next();
       }
     });
