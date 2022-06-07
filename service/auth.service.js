@@ -21,7 +21,7 @@ refreshTokenVerifyAndIssue = async (id, results) => {
         //5기기를 넘으면 처음에 발급한 accessToken을 폐기
         if(data.length >= 5) {
           console.log('remove expired token');
-          Token.removeOneRefresh(id, (err, result) => {
+          Token.removeOneRefresh(id, (err, data) => {
             if(err) {              
               console.log("token removeOne err in refreshTokenVerify");
               return results(err,null);
@@ -35,7 +35,7 @@ refreshTokenVerifyAndIssue = async (id, results) => {
           jwt.verify(refreshToken, process.env.REFRESH_SECRET);
         } catch (err) {
           //refresh token err시 모든 토큰 삭제 및 재발급
-          Token.removeRefresh(id, (err, result) => {
+          Token.removeRefresh(id, (err, data) => {
             if(err) {
               console.log("token removeAll err in refreshTokenVerify");
               return results(err,null);
