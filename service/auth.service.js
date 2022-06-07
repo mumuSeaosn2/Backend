@@ -35,7 +35,7 @@ refreshTokenVerifyAndIssue = async (id, results) => {
           jwt.verify(refreshToken, process.env.REFRESH_SECRET);
         } catch (err) {
           //refresh token err시 모든 토큰 삭제 및 재발급
-          Token.removeAll(id, (err, result) => {
+          Token.removeAll(id, (err, results) => {
             if(err) {
               console.log("token removeAll err in refreshTokenVerify");
               return results(err,null);
