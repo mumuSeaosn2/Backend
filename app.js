@@ -10,8 +10,9 @@ const { sequelize } = require("./models");
 const passportConfig = require('./passport/passportConfig')
 const cookieParser = require('cookie-parser');
 const auth = require('./service/auth.service');
-
+const redis=require('redis')
 const app = express();
+
 
 //enable cors
 /*

@@ -15,6 +15,7 @@ services:
       - mumuseason2-api
     depends_on:
       - mumuseason2-database
+      - mumuseason2-redis
     #entrypoint: ./wait-for-it.sh mumuseason2-database:5432 
 
   mumuseason2-database:
@@ -32,6 +33,21 @@ services:
       - mumuseason2-msdata:/var/lib/mysql
     networks:
       - mumuseason2-api
+
+  mumuseason2-redis:
+    container_name: mumuseason2-redis
+    image: redis:5.0.3
+    hostname: mumuseason2-redis
+    command: redis-server
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - mumuseason2-api
+
+
+
+    
 
 networks:
   mumuseason2-api:

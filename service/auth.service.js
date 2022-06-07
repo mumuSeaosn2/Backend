@@ -10,18 +10,18 @@ require('dotenv').config();
 refreshTokenVerifyAndIssue = async (id, results) => {
   console.log("refreshTokenVerify start");
   let refreshToken;
-  Token.findAllById(id, (err, data) => {
+  Token.findAllRefreshById(id, (err, data) => {
     //findbyid로 refreshtoken 존재유무 확인
     if(err) {
       console.log("findbyid err in refreshTokenVerify");
-      return results(err,null);
+      results(err,null);
     } else {
       if(data.length) {
         //최대 동시접속은 5개 까지
         //5기기를 넘으면 처음에 발급한 accessToken을 폐기
         if(data.length >= 5) {
           console.log('remove expired token');
-          Token.removeOne(id, (err, result) => {
+          Token.removeOneRefresh(id, (err, data) => {
             if(err) {              
               console.log("token removeOne err in refreshTokenVerify");
               return results(err,null);
@@ -35,7 +35,7 @@ refreshTokenVerifyAndIssue = async (id, results) => {
           jwt.verify(refreshToken, process.env.REFRESH_SECRET);
         } catch (err) {
           //refresh token err시 모든 토큰 삭제 및 재발급
-          Token.removeAll(id, (err, result) => {
+          Token.removeRefresh(id, (err, data) => {
             if(err) {
               console.log("token removeAll err in refreshTokenVerify");
               return results(err,null);
@@ -132,9 +132,8 @@ exports.tokenIssuance = async (req, res) => {
                 refreshToken = result;
               }
               accessToken = jwt.sign({id: userFound.id}, process.env.ACCESS_SECRET, {expiresIn: "30m"});
-              Token.create({
-                id: userFound.id,
-                accessToken: accessToken,
+              Token.createRefresh({
+                userId: userFound.id,
                 refreshToken: refreshToken,
               },(err, data) => {
                 if(err) {
@@ -142,10 +141,16 @@ exports.tokenIssuance = async (req, res) => {
                     message:"token create error"
                   });
                 } else {
-                  res.cookie("x_auth", data.accessToken, {
+                  res.cookie("accessToken", accessToken, {
                     maxAge: 1000 * 60 * 30,//30분
                     httpOnly: true,
                   });
+
+                  res.cookie("refreshToken",data.refreshToken,{
+                    maxAge: 1000 * 60 * 600,
+                    httpOnly:true
+                  });
+
                   res.send(userFound.user_name);
                 }
               });
@@ -168,9 +173,8 @@ exports.tokenIssuance = async (req, res) => {
             refreshToken = result;
           }
           accessToken = jwt.sign({id: userFound.id}, process.env.ACCESS_SECRET, {expiresIn: "30m"});
-          Token.create({
-            id: userFound.id,
-            accessToken: accessToken,
+          Token.createRefresh({
+            userId: userFound.id,
             refreshToken: refreshToken,
           },(err, data) => {
             if(err) {
@@ -178,9 +182,13 @@ exports.tokenIssuance = async (req, res) => {
                 message:"token create error"
               });
             } else {
-              res.cookie("x_auth", data.accessToken, {
+              res.cookie("accessToken", accessToken, {
                 maxAge: 1000 * 60 * 30,//30분
                 httpOnly: true,
+              });
+              res.cookie("refreshToken",data.refreshToken,{
+                maxAge: 1000 * 60 * 600,
+                httpOnly:true
               });
               res.send(userFound.user_name);
             }
@@ -207,8 +215,9 @@ exports.tokenAuthenticate = (req, res ,next) => {
   let id;
 
   //req, 쿠키 존재 확인
-  if (req && req.cookies['x_auth']) {
-    accessToken = req.cookies['x_auth'];
+  if (req && req.cookies['accessToken'] && req.cookies['refreshToken']) {
+    accessToken = req.cookies['accessToken'];
+    refreshToken = req.cookies['refreshToken']
   } else {
     return res.status(401).send("Unauthorized1")
   }
@@ -223,14 +232,14 @@ exports.tokenAuthenticate = (req, res ,next) => {
   } catch(err) {
     //accesstoken 만료시 refreshtoken 확인
     if(err === 'TokenExpiredError') {
-      Token.findById(id, (err, result) => {
+      Token.findAllRefreshById(id, (err, result) => {
         if(err) {
           res.status(500).send({
             message:"findbyid error"
           });
         }
 
-        if(!result) {
+        if(result != null) {
           refreshToken = result.refreshToken;
 
           //refreshtoken 유효 확인
@@ -238,7 +247,7 @@ exports.tokenAuthenticate = (req, res ,next) => {
             jwt.verify(refreshToken, process.env.REFRESH_SECRET);
           } catch (err) {
             //refresh token err시 모든 토큰 삭제
-            Token.removeAll(id, (err, result) => {
+            Token.removeRefresh(id, (err, result) => {
               if(err) {
                 res.status(500).send({
                   messgae: "토큰 삭제 오류"
@@ -250,7 +259,7 @@ exports.tokenAuthenticate = (req, res ,next) => {
           }
 
           //refresh token이 유효하면 db에서 제거후 access token 재발급
-          Token.remove(id, accessToken,(err, result) => {
+          Token.removeOneRefresh(id, accessToken,(err, result) => {
             if(err) {
               res.status(500).send({
                 message: "토큰 삭제 오류"
@@ -260,9 +269,8 @@ exports.tokenAuthenticate = (req, res ,next) => {
 
           accessToken = jwt.sign({id: id}, process.env.ACCESS_SECRET, {expiresIn: "5m"});
 
-          Token.create({
-            id: id,
-            accessToken: accessToken,
+          Token.createRefresh({
+            userId: id,
             refreshToken: refreshToken,
           },(err, data) => {
             if(err) {
@@ -270,10 +278,14 @@ exports.tokenAuthenticate = (req, res ,next) => {
                 message:"token create error"
               });
             } else {
-              res.cookie("x_auth", data.accessToken, {
+              res.cookie("accessToken", accessToken, {
                 maxAge: 1000 * 60 * 5,//5분
                 httpOnly: true,
-              }).redirect(req.path);
+              })
+              res.cookie("refreshToken",data.refreshToken,{
+                maxAge: 1000 * 60 * 600,
+                httpOnly:true
+              });
             }
           });
 
@@ -298,16 +310,18 @@ exports.tokenAuthenticate = (req, res ,next) => {
 }
 
 exports.logout = (req, res, next) => {
-  if (req && req.cookies['x_auth']) {
-    let accessToken = req.cookies['x_auth'];
+  if (req && req.cookies['accessToken']) {
+    let accessToken = req.cookies['accessToken'];
     id = jwt.decode(accessToken, process.env.ACCESS_SECRET).id;
-    Token.remove(id, accessToken, (err, result) => {
+    Token.removeRefresh(id, (err, result) => {
       if(err) {
         res.status(500).send({
           message: "토큰 삭제 오류"
         });
       } else {
-        res.clearCookie('x_auth').send("log out");
+
+        res.clearCookie('refreshToken');
+        res.clearCookie('accessToken').send("log out");
         next();
       }
     });
