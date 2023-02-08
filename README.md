@@ -15,7 +15,7 @@ cd Backend
 
 4.run command for docker
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 5.check out http://localhost:3000/api/docs/
